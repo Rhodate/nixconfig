@@ -1,0 +1,55 @@
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
+with lib; {
+  options.swarm.cli.git = {
+    enable = mkOption {
+      description = "Whether this user needs git support";
+      type = types.bool;
+      default = false;
+    };
+  };
+
+  config = mkIf config.swarm.cli.git.enable {
+    programs.git = {
+      enable = true;
+      userName = "rhodate";
+      userEmail = "16692923+Rhodate@users.noreply.github.com";
+
+      extraConfig = {
+        init.defaultBranch = "main";
+        gpg.format = "ssh";
+        commit.gpgSign = true;
+        tag.gpgSign = true;
+        user.signingKey = "~/.ssh/id_ed25519.pub";
+        # Not 100% sure if I ever actually configured this
+        gpg.ssh.allowedSignersFile = "~/.ssh/allowed_signers";
+      };
+
+      lfs.enable = true;
+      difftastic = {
+        enable = true;
+        background = "dark";
+      };
+    };
+
+    home.file.".ssh/allowed_signers".text = ''
+      * ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC08NBlg0PwiuYEEJAo3WFLpd/JHz3wnqNyFhhgcYUH0 rhoddy@ophia
+    '';
+
+    programs.gh = {
+      enable = true;
+      settings.git_protocol = "ssh";
+      extensions = with pkgs; [
+        gh-markdown-preview
+      ];
+    };
+
+    home.packages = with pkgs; [
+      git-filter-repo
+    ];
+  };
+}
