@@ -51,14 +51,6 @@ return require('lazy').setup({
   'rmagatti/auto-session',
 
   {
-    'ahmedkhalf/project.nvim',
-    config = function()
-      require('project_nvim').setup({
-      })
-    end,
-  },
-
-  {
     'mikesmithgh/kitty-scrollback.nvim',
     enabled = true,
     lazy = true,

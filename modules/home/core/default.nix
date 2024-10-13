@@ -41,6 +41,10 @@ with lib; {
         pictures = "${homeDirectory}/Images";
         videos = "${homeDirectory}/Videos";
 
+        extraConfig = {
+          Code = "${homeDirectory}/Code";
+        };
+
         # Don't need these.
         publicShare = null;
         templates = null;

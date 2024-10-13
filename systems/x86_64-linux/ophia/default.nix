@@ -40,6 +40,19 @@
   boot.initrd.availableKernelModules = ["nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod"];
   boot.kernelModules = ["kvm-amd"];
 
+  networking = {
+    defaultGateway = "192.168.1.1";
+    nameservers = [ "8.8.8.8" "8.8.4.4" ];
+    defaultGateway6 = {
+      address = "fe00::1";
+      interface = "enp6s0";
+    };
+    interfaces.enp6s0.ipv6.addresses = [ {
+      address = "2601:197:4400:3f9::cafe:beef";
+      prefixLength = 64;
+    } ];
+  };
+
   fileSystems."/" = {
     device = "rpool/root";
     fsType = "zfs";

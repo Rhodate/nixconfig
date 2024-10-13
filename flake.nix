@@ -15,13 +15,18 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    rhovim = {
+      url = "git+ssh://git@github.com/Rhodate/rhovim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Standalone library for the Nix language.
     nix-std.url = "github:chessai/nix-std";
 
-snowfall-flake = {
-			url = "github:snowfallorg/flake";
-			inputs.nixpkgs.follows = "nixpkgs";
-		};
+    snowfall-flake = {
+      url = "github:snowfallorg/flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     swww = {
       url = "github:LGFae/swww";
