@@ -17,11 +17,13 @@
   config,
   modulesPath,
   ...
-}: {
+}:
+with lib; {
   swarm = {
     hardware = {
       nvidia.enable = true;
       networking.hostId = "36aa1853";
+      input-remapper.enable = true;
     };
     virtualization = {
       enable = true;
@@ -31,6 +33,7 @@
     fs.type = "zfs";
     signal.enable = true;
     gaming.steam.enable = true;
+    syncthing.enable = true;
   };
 
   imports = [
@@ -39,19 +42,6 @@
 
   boot.initrd.availableKernelModules = ["nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod"];
   boot.kernelModules = ["kvm-amd"];
-
-  networking = {
-    defaultGateway = "192.168.1.1";
-    nameservers = [ "8.8.8.8" "8.8.4.4" ];
-    defaultGateway6 = {
-      address = "fe00::1";
-      interface = "enp6s0";
-    };
-    interfaces.enp6s0.ipv6.addresses = [ {
-      address = "2601:197:4400:3f9::cafe:beef";
-      prefixLength = 64;
-    } ];
-  };
 
   fileSystems."/" = {
     device = "rpool/root";
@@ -67,6 +57,11 @@
     device = "cpool/coldstorage";
     fsType = "zfs";
   };
+
+  users.groups.archive = {};
+  systemd.tmpfiles.rules = [
+    "d /mnt/coldstorage/Videos 0750 root archive"
+  ];
 
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/F614-4162";

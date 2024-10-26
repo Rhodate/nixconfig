@@ -1,5 +1,4 @@
 {
-  options,
   config,
   lib,
   pkgs,
@@ -43,6 +42,7 @@ with lib; {
         home-manager
         swarm.gamescope-launcher
         snowfallorg.flake
+        age
       ];
       nixpkgs.config.allowUnfree = true;
       time.timeZone = cfg.timezone;

@@ -1,5 +1,4 @@
 {
-  options,
   config,
   lib,
   pkgs,
@@ -16,12 +15,13 @@ with lib; {
 
   config = let
     cfg = config.swarm.signal;
-  in {
-    services.signald = {
-      enable = true;
-      user = swarm.user;
-    };
+  in
+    mkIf cfg.enable {
+      services.signald = {
+        enable = true;
+        user = swarm.user;
+      };
 
-    environment.systemPackages = [pkgs.signaldctl];
-  };
+      environment.systemPackages = [pkgs.signaldctl];
+    };
 }

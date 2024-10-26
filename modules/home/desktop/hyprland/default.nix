@@ -3,6 +3,7 @@
   lib,
   pkgs,
   inputs,
+  system,
   ...
 }:
 with lib; {
@@ -26,8 +27,18 @@ with lib; {
         playerctl
       ];
 
+      xdg.portal = let
+        cfg = config.wayland.windowManager.hyprland;
+      in {
+        enable = true;
+        extraPortals = [inputs.hyprland.packages.${system}.xdg-desktop-portal-hyprland];
+        configPackages = lib.mkDefault [cfg.finalPackage];
+      };
+
       wayland.windowManager.hyprland = {
         enable = true;
+
+        package = inputs.hyprland.packages.${system}.hyprland;
 
         plugins = [
         ];
@@ -45,6 +56,14 @@ with lib; {
 
           exec-once = [
             "hyprctl setcursor Bibata-Modern-Ice 22"
+          ];
+
+          workspace = [
+            "1,monitor:DP-1"
+            "2,monitor:DP-2"
+            "3,monitor:DP-1"
+            "4,monitor:DP-1"
+            "5,monitor:DP-1"
           ];
 
           windowrule = [

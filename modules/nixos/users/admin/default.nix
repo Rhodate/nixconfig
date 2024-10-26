@@ -13,6 +13,7 @@ in {
       [
         "wheel"
         "input"
+        "archive"
       ]
       ++ ifPresent [
         "networkmanager"

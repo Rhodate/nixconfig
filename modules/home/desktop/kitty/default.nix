@@ -17,22 +17,22 @@ with lib; {
   in
     mkIf cfg.enable {
       home.file.".config/kitty/tab_bar.py" = {
-        source = ./config/tab_bar.py;
+        source = ./res/tab_bar.py;
       };
 
       home.file.".config/kitty/ssh.conf" = {
-        source = ./config/ssh.conf;
+        source = ./res/ssh.conf;
       };
 
       # TODO(rhoddy): Move this into its own module. Maybe as part of nix'ing vim
       # This and the pass_keys script below are part of nvim kitty navigator
       # Along with the keybindings for moving between kitty windows pointing at this script
       home.file.".config/kitty/navigate_kitty.py" = {
-        source = ./config/navigate_kitty.py;
+        source = ./res/navigate_kitty.py;
       };
 
       home.file.".config/kitty/pass_keys.py" = {
-        source = ./config/pass_keys.py;
+        source = ./res/pass_keys.py;
       };
 
       programs.kitty = {
@@ -53,23 +53,25 @@ with lib; {
           "alt+shift+f" = "toggle_fullscreen";
           "alt+left" = "send_text all \x1bb";
           "alt+right" = "send_text all \x1bf";
+          "ctrl+shift+]" = "next_tab";
+          "ctrl+shift+[" = "previous_tab";
         };
         settings = {
           enabled_layouts = "splits:split_axis=vertical";
 
-          allow_remote_control = true;
+          allow_remote_control = "yes";
           listen_on = "unix:/tmp/mykitty";
 
-          editor = "nvim";
+          dynamic_background_opacity = "yes";
 
-          dynamic_background_opacity = true;
+          editor = "nvim";
 
           font_family = "Fira Code";
           font_size = 11;
           disable_ligatures = "cursor";
           symbol_map = ''
             U+E5FA-U+E62B,U+E700-U+E7C5,U+F000-U+F2E0,U+E200-U+E2A9,U+E0A3,U+E0B4-U+E0C8,U+E0CA,U+E0CC-U+E0D2,U+E0D4,U+f500-U+fd46 Symbols Nerd Font
-            symbol_map U+E0A1-U+E0A3,U+E0C0-U+E0C7 PowerlineSymbols''; # Does this hack work? We'll see
+            symbol_map U+E0A1-U+E0A3,U+E0C0-U+E0C7 PowerlineSymbols''; # Does this hack work? We'll see... :3
 
           scrollback_lines = 10000000;
 
@@ -77,7 +79,7 @@ with lib; {
           wayland_titlebar_color = "system";
 
           window_margin_width = 2;
-          window_border_width = "1pt";
+
           placement_strategy = "top-left";
 
           tab_bar_edge = "top";
@@ -86,7 +88,6 @@ with lib; {
           tab_switch_strategy = "left";
           tab_bar_style = "custom";
           tab_powerline_style = "angled";
-          tab_title_template = "{index}:{tab.active_wd}";
 
           macos_option_as_alt = true;
           macos_quit_when_last_window_closed = true;

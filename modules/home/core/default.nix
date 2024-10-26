@@ -23,7 +23,6 @@ with lib; {
       sessionVariables = {
         GTK_THEME = "catppuccin-frappe-gtk";
         XDG_SCREENSHOTS_DIR = "${config.xdg.userDirs.pictures}/Screenshots";
-        NIXOS_OZONE_WL = 1;
       };
     };
 

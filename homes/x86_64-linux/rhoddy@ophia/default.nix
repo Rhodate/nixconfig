@@ -6,7 +6,7 @@
       waybar.enable = true;
       swww = {
         enable = true;
-        defaultWallpaper = ./alexander-streng-ezgif-com-optimize.gif;
+        defaultWallpaper = ./wallpapers/alexander-streng-ezgif-com-optimize.gif;
       };
       kitty.enable = true;
     };
@@ -18,6 +18,7 @@
       direnv.enable = true;
       git.enable = true;
       btop.enable = true;
+      newsboat.enable = true;
     };
   };
 
@@ -31,6 +32,7 @@
     syncthing
     fastfetch
     xz
+    traceroute
     p7zip
     obs-studio
     timg
@@ -42,6 +44,7 @@
     usbutils
     pciutils
     lsof
+    sops
     firefox
     tor-browser-bundle-bin
     signal-desktop
@@ -55,6 +58,7 @@
     gnumake
     autoconf
     automake
+    opentofu
     gimp
     libtool
     parted

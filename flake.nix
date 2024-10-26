@@ -2,6 +2,7 @@
   description = "NixOS configurations for the rhodate cluster";
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    master.url = "github:nixos/nixpkgs";
 
     home-manager.url = "github:nix-community/home-manager/master";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";

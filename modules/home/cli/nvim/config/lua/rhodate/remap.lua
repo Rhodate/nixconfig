@@ -30,7 +30,5 @@ vim.keymap.set({ 'n', 'v' }, '<leader>y', '"+y')
 vim.keymap.set({ 'n', 'v' }, '<leader>p', '"+p')
 vim.keymap.set({ 'n', 'v' }, '<leader>P', '"+P')
 
-vim.keymap.set('n', '<Tab>', ':bnext\n')
-vim.keymap.set('n', '<S-Tab>', ':bprev\n')
-
-vim.keymap.set({ 'n', 'v' }, ';', ':')
+vim.keymap.set('n', '<C-]>', ':bnext\n', { remap = true })
+vim.keymap.set('n', '<C-[>', ':bprev\n', { remap = true })

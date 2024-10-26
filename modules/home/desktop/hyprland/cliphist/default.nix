@@ -17,6 +17,8 @@ with lib; {
   in
     mkIf (cfg.enable
       && cfg.cliphist.enable) {
-      services.cliphist.enable = true;
+      services.cliphist = {
+        enable = true;
+      };
     };
 }
