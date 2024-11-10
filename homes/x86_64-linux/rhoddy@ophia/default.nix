@@ -10,6 +10,9 @@
       };
       kitty.enable = true;
     };
+    gaming = {
+      proton-ge.enable = true;
+    };
     fonts.enable = true;
     cli = {
       shell = "zsh";
@@ -32,6 +35,7 @@
     syncthing
     fastfetch
     xz
+    element-desktop-wayland
     traceroute
     p7zip
     obs-studio
@@ -51,12 +55,11 @@
     tree
     tmatrix
     discord
-    webcord
-    vesktop
     gcc
     cmake
     gnumake
     autoconf
+    dmidecode
     automake
     opentofu
     gimp

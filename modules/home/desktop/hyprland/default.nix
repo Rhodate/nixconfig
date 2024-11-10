@@ -145,7 +145,7 @@ with lib; {
 
           monitor = [
             "DP-1, highrr, 0x0, 1"
-            "DP-2, 2560x1440, -2560x0, 1"
+            "DP-2, 2560x1440, -2561x2000, 1"
             "Unknown-1,disable"
           ];
 
@@ -162,7 +162,7 @@ with lib; {
           };
 
           decoration = {
-            rounding = 0;
+            rounding = 10;
             blur = {
               enabled = true;
               size = 3;

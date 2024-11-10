@@ -33,6 +33,11 @@
       url = "github:LGFae/swww";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    
+    lix-module = {
+      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.91.1-1.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
@@ -91,6 +96,7 @@
       systems.modules.nixos = with inputs; [
         home-manager.nixosModules.home-manager
         hyprland.nixosModules.default
+        lix-module.nixosModules.default
       ];
 
       overlays = with inputs; [

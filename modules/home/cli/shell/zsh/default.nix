@@ -14,6 +14,7 @@ in {
       enableCompletion = true;
       dirHashes = {
         n = "/home/${swarm.user}/swarm.flake";
+        balatroAppData = "/home/${swarm.user}/.steam/steam/steamapps/compatdata/2379780/pfx/drive_c/users/steamuser/AppData/Roaming/Balatro";
       };
       history = {
         append = true;
@@ -88,13 +89,18 @@ in {
         setopt numericglobsort
         setopt promptsubst
         setopt incappendhistory
-        setopt EXTENDED_HISTORY
 
         ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(buffer-empty bracketed-paste accept-line push-line-or-edit)
         ZSH_AUTOSUGGEST_USE_ASYNC=true
       '';
 
       initExtra = ''
+        bindkey "$terminfo[kcuu1]" history-substring-search-up
+        bindkey "$terminfo[kcud1]" history-substring-search-down
+
+        bindkey -M vicmd 'k' history-substring-search-up
+        bindkey -M vicmd 'j' history-substring-search-down
+
         source_if_exists ~/.p10k.zsh
       '';
 
