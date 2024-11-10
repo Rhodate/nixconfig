@@ -31,6 +31,7 @@ with lib; {
         cfg = config.wayland.windowManager.hyprland;
       in {
         enable = true;
+        xdgOpenUsePortal = true;
         extraPortals = [inputs.hyprland.packages.${system}.xdg-desktop-portal-hyprland];
         configPackages = lib.mkDefault [cfg.finalPackage];
       };
