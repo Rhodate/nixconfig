@@ -1,7 +1,5 @@
 {inputs, ...}: let
-  nix-std = builtins.attrValues inputs.nix-std.lib;
 in rec {
-  inherit nix-std;
 
   user = "rhoddy";
 

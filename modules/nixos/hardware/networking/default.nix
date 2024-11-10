@@ -23,7 +23,6 @@ with lib; {
   in
     mkIf cfg.enable {
       networking.useDHCP = lib.mkDefault true;
-      networking.networkmanager.enable = true; # Easiest to use and most distros use this by default.
       networking.hostId = cfg.hostId;
     };
 }
