@@ -9,7 +9,6 @@ with lib; {
       users.users.${swarm.user}.extraGroups = [
         "video"
         "render"
-        "builder"
       ];
     })
 

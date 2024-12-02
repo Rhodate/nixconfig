@@ -1,6 +1,4 @@
-{inputs, ...}: let
-in rec {
-
+{inputs, ...}: rec {
   user = "rhoddy";
 
   flakePath = "/home/${user}/swarm.flake";
@@ -8,9 +6,6 @@ in rec {
   nix = {
     distributedBuilds = true;
     settings = {
-      allowed-users = ["@builders"];
-      trusted-users = ["@builders"];
-
       substituters = [
         "https://cache.nixos.org"
         "https://hyprland.cachix.org"
@@ -33,10 +28,6 @@ in rec {
       generateNixPathFromInputs = true;
       generateRegistryFromInputs = true;
       linkInputs = true;
-
-      max-jobs = "auto";
-      builders-use-substitutes = true;
-      builders = "@/etc/nix/machines";
     };
   };
 }

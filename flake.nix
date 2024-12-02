@@ -30,7 +30,7 @@
       url = "github:LGFae/swww";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    
+
     lix-module = {
       url = "https://git.lix.systems/lix-project/nixos-module/archive/2.91.1-1.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -41,7 +41,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    hyprland.url = "git+https://github.com/hyprwm/Hyprland.git?ref=refs/tags/v0.41.0&submodules=1";
+    hyprland = {
+      type = "git";
+      url = "https://github.com/hyprwm/Hyprland";
+      submodules = true;
+    };
     hyprland-plugins = {
       url = "github:hyprwm/hyprland-plugins";
       inputs.hyprland.follows = "hyprland";
@@ -57,6 +61,10 @@
 
     zsh-completions = {
       url = "github:zsh-users/zsh-completions";
+      flake = false;
+    };
+    zsh-colored-man-pages = {
+      url = "github:ael-code/zsh-colored-man-pages";
       flake = false;
     };
     zsh-autocomplete = {
@@ -93,12 +101,12 @@
       systems.modules.nixos = with inputs; [
         home-manager.nixosModules.home-manager
         hyprland.nixosModules.default
-        lix-module.nixosModules.default
       ];
 
       overlays = with inputs; [
         snowfall-flake.overlays.default
         rust-overlay.overlays.default
+        lix-module.overlays.default
       ];
 
       alias = {

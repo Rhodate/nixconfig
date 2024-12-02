@@ -32,7 +32,10 @@ with lib; {
       in {
         enable = true;
         xdgOpenUsePortal = true;
-        extraPortals = [inputs.hyprland.packages.${system}.xdg-desktop-portal-hyprland];
+        extraPortals = [
+          inputs.hyprland.packages.${system}.xdg-desktop-portal-hyprland
+          pkgs.xdg-desktop-portal-gtk
+        ];
         configPackages = lib.mkDefault [cfg.finalPackage];
       };
 

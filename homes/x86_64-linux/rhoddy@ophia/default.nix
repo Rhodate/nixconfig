@@ -61,7 +61,7 @@
     autoconf
     dmidecode
     automake
-    opentofu
+    vulkan-tools
     gimp
     libtool
     parted
@@ -80,6 +80,10 @@
     vlc
     dotnetCorePackages.sdk_9_0
     jetbrains.rider
+  ];
+
+  nixpkgs.config.permittedInsecurePackages = [
+    "dotnet-sdk-7"
   ];
 
   wayland.windowManager.hyprland.settings.exec-once = [

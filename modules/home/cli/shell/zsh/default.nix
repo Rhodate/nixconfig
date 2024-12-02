@@ -49,6 +49,10 @@ in {
           name = "zsh-completions";
           src = inputs.zsh-completions;
         }
+        {
+          name = "zsh-colored-man-pages";
+          src = inputs.zsh-colored-man-pages;
+        }
         #{
         #  name = "zsh-autocomplete";
         #  src = inputs.zsh-autocomplete;
@@ -56,10 +60,6 @@ in {
         {
           name = "zsh-dotnet-completion ";
           src = inputs.zsh-dotnet-completion;
-        }
-        {
-          name = "zsh-better-npm-completion";
-          src = inputs.zsh-better-npm-completion;
         }
         {
           name = "zsh-better-npm-completion";

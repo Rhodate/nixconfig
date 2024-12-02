@@ -9,7 +9,7 @@ with lib; {
       enableDefaultPackages = true;
       fontDir.enable = true;
       packages = with pkgs; [
-        nerdfonts
+        nerd-fonts.symbols-only
         fira-code
         fira-mono
         powerline-symbols

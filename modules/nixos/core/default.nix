@@ -44,7 +44,13 @@ with lib; {
         snowfallorg.flake
         age
       ];
-      nixpkgs.config.allowUnfree = true;
+      nixpkgs.config = {
+        allowUnfree = true;
+        permittedInsecurePackages = [
+          "dotnet-sdk-7.0.410"
+        ];
+      };
+      nix.package = pkgs.lix;
       time.timeZone = cfg.timezone;
       i18n = {
         defaultLocale = cfg.locale.main;
