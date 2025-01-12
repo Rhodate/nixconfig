@@ -95,6 +95,7 @@
     "[workspace 3 silent] discord"
     "[workspace 4 silent] spotify"
     "[workspace 5 silent] steam"
+    "[workspace special silent] signal-desktop"
   ];
 
   home.stateVersion = "24.11";
