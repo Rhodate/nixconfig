@@ -58,6 +58,13 @@
       url = "github:hyprwm/contrib";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    
+    prismlauncher = {
+      url = "github:PrismLauncher/PrismLauncher";
+
+      # inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-compat.follows = "";
+    };
 
     zsh-completions = {
       url = "github:zsh-users/zsh-completions";
@@ -107,6 +114,7 @@
         snowfall-flake.overlays.default
         rust-overlay.overlays.default
         lix-module.overlays.default
+        prismlauncher.overlays.default
       ];
 
       alias = {

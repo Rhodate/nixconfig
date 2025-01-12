@@ -80,6 +80,7 @@
     vlc
     dotnetCorePackages.sdk_9_0
     jetbrains.rider
+    prismlauncher
   ];
 
   nixpkgs.config.permittedInsecurePackages = [
