@@ -31,11 +31,12 @@
     cryptsetup
     openssl_3_3
     yazi
+    hwinfo
     kdenlive
     syncthing
     fastfetch
     xz
-    element-desktop-wayland
+    element-desktop
     traceroute
     p7zip
     obs-studio

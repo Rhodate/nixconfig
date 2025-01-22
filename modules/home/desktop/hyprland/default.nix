@@ -117,7 +117,7 @@ with lib; {
             "$mod, 8, workspace, 8"
             "$mod, 9, workspace, 9"
             "$mod, 0, workspace, 10"
-            "$mod, S, workspace, special"
+            "$mod, S, togglespecialworkspace"
 
             "$mod ALT, 1, movetoworkspace, 1"
             "$mod ALT, 2, movetoworkspace, 2"
