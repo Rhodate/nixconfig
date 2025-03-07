@@ -22,8 +22,8 @@ with lib; {
       services.dunst = {
         enable = true;
         iconTheme = {
-          name = "Fluent-dark";
-          package = pkgs.fluent-icon-theme;
+          name = "Rose pine";
+          package = pkgs.rose-pine-icon-theme;
         };
         settings = {
           global = {

@@ -29,10 +29,10 @@
 
   home.packages = with pkgs; [
     cryptsetup
-    openssl_3_3
+    libressl_3_9
     yazi
     hwinfo
-    kdenlive
+    kdePackages.kdenlive
     syncthing
     fastfetch
     xz
