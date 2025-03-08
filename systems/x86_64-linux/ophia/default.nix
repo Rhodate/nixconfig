@@ -21,7 +21,8 @@
 with lib; {
   swarm = {
     hardware = {
-      nvidia.enable = true;
+      nvidia.enable = false;
+      amdgpu.enable = true;
       networking.hostId = "36aa1853";
       input-remapper.enable = true;
     };
@@ -41,7 +42,7 @@ with lib; {
   ];
 
   boot.initrd.availableKernelModules = ["nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod"];
-  boot.kernelModules = ["kvm-amd"];
+  boot.kernelModules = ["kvm-amd" "amdgpu"];
 
   fileSystems."/" = {
     device = "rpool/root";
@@ -53,15 +54,7 @@ with lib; {
     fsType = "zfs";
   };
 
-  fileSystems."/mnt/coldstorage" = {
-    device = "cpool/coldstorage";
-    fsType = "zfs";
-  };
-
   users.groups.archive = {};
-  systemd.tmpfiles.rules = [
-    "d /mnt/coldstorage/Videos 0750 root archive"
-  ];
 
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/F614-4162";

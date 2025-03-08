@@ -33,7 +33,6 @@ with lib; {
         enable = true;
         xdgOpenUsePortal = true;
         extraPortals = [
-          inputs.hyprland.packages.${system}.xdg-desktop-portal-hyprland
           pkgs.xdg-desktop-portal-gtk
         ];
         configPackages = lib.mkDefault [cfg.finalPackage];
@@ -63,24 +62,24 @@ with lib; {
           ];
 
           workspace = [
-            "1,monitor:DP-1"
-            "2,monitor:DP-2"
-            "3,monitor:DP-1"
-            "4,monitor:DP-1"
-            "5,monitor:DP-1"
+            "1,monitor:DP-2"
+            "2,monitor:DP-3"
+            "3,monitor:DP-2"
+            "4,monitor:DP-2"
+            "5,monitor:DP-2"
           ];
 
           windowrule = [
-            "opacity 0.8 override 0.8 override 0.8 override,^(kitty)$"
-            "workspace 3,title:Discord"
-            "workspace 5,title:[sS]team"
+            "opacity 0.8 0.8 0.8,^(kitty)$"
+            "workspace 3 silent,^(discord)$"
+            "workspace 5 silent,title:[sS]team"
             "float,[tT]or.*"
           ];
 
           bind = [
             "ALT, space, exec, wofi --show drun -I"
-            "$mod SHIFT, w, killactive"
-            "$mod SHIFT, q, exit"
+            "$mod SHIFT, q, killactive"
+            "$mod SHIFT, l, exit"
             "$mod, q, exec, kitty"
             "$mod, h, movefocus, l"
             "$mod, j, movefocus, d"
@@ -150,8 +149,8 @@ with lib; {
           };
 
           monitor = [
-            "DP-1, highrr, 0x0, 1"
-            "DP-2, 2560x1440, -2561x2000, 1"
+            "DP-2, highrr, 0x0, 1"
+            "DP-3, 2560x1440, -2561x2000, 1"
             "Unknown-1,disable"
           ];
 

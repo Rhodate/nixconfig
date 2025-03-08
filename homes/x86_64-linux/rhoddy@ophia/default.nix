@@ -63,6 +63,7 @@
     dmidecode
     automake
     vulkan-tools
+    glxinfo
     gimp
     libtool
     parted
