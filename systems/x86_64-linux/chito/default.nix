@@ -41,60 +41,54 @@ with lib; {
   security.sudo.wheelNeedsPassword = false;
 
   environment.enableAllTerminfo = true;
-  
+
   boot = {
-    kernelModules = [ "kvm-amd" ];
+    kernelModules = ["kvm-amd"];
     kernelParams = [
       "ip=dhcp"
     ];
     initrd = {
-      availableKernelModules = [ "igb" "nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
+      availableKernelModules = ["igb" "nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod"];
       network = {
         enable = true;
         ssh = {
           enable = true;
           port = 22;
-          authorizedKeys = [ swarm.masterSshKey ];
-          hostKeys = [ "/etc/secrets/initrd/ssh_host_rsa_key" ];
+          authorizedKeys = [swarm.masterSshKey];
+          hostKeys = ["/boot/keys/ssh_host_rsa_key"];
           shell = "/bin/cryptsetup-askpass";
         };
       };
     };
   };
 
-  fileSystems."/" =
-    { device = "none";
-      fsType = "tmpfs";
-      options = [ "defaults" "size=2G" "mode=755" ];
-    };
+  fileSystems."/" = {
+    device = "none";
+    fsType = "tmpfs";
+    options = ["defaults" "size=2G" "mode=755"];
+  };
 
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/C93D-E931";
-      fsType = "vfat";
-      options = [ "fmask=0077" "dmask=0077" ];
-    };
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/C93D-E931";
+    fsType = "vfat";
+    options = ["fmask=0077" "dmask=0077"];
+  };
 
-  fileSystems."/nix" =
-    { device = "zroot/root/nix";
-      fsType = "zfs";
-    };
+  fileSystems."/nix" = {
+    device = "zroot/root/nix";
+    fsType = "zfs";
+  };
 
-  fileSystems."/home" =
-    { device = "zroot/root/home";
-      fsType = "zfs";
-    };
+  fileSystems."/home" = {
+    device = "zroot/root/home";
+    fsType = "zfs";
+  };
 
-  fileSystems."/var/log" =
-    { device = "/nix/persist/var/log";
-      fsType = "none";
-      options = [ "bind" ];
-    };
-
-  fileSystems."/etc/secrets" =
-    { device = "/nix/persist/etc/secrets";
-      fsType = "none";
-      options = [ "bind" ];
-    };
+  fileSystems."/var/log" = {
+    device = "/nix/persist/var/log";
+    fsType = "none";
+    options = ["bind"];
+  };
 
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 

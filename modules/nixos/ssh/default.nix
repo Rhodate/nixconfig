@@ -12,7 +12,7 @@ with lib; {
       default = true;
     };
   };
-  
+
   config = let
     cfg = config.swarm.ssh;
   in
@@ -22,7 +22,7 @@ with lib; {
         settings.PasswordAuthentication = false;
         settings.KbdInteractiveAuthentication = false;
       };
-      users.users.${swarm.user}.openssh.authorizedKeys.keys = [ 
+      users.users.${swarm.user}.openssh.authorizedKeys.keys = [
         swarm.masterSshKey
       ];
     };

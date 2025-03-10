@@ -18,9 +18,9 @@ with lib; {
     };
 
     fileSystems."/var/lib/rancher/k3s" = {
-        device = "/nix/persist/var/lib/rancher/k3s";
-        fsType = "none";
-        options = [ "bind" ];
+      device = "/nix/persist/var/lib/rancher/k3s";
+      fsType = "none";
+      options = ["bind"];
     };
   };
 }

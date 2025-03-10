@@ -32,7 +32,7 @@
     };
 
     lix-module = {
-      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.91.1-1.tar.gz";
+      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.92.0.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -58,7 +58,7 @@
       url = "github:hyprwm/contrib";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    
+
     prismlauncher = {
       url = "github:PrismLauncher/PrismLauncher";
 
@@ -90,8 +90,8 @@
       url = "github:romkatv/powerlevel10k";
       flake = false;
     };
-    
-    inputs.kubenix.url = "github:hall/kubenix";
+
+    kubenix.url = "github:hall/kubenix";
   };
 
   outputs = inputs:
