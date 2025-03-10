@@ -53,12 +53,15 @@ with lib; {
         enable = true;
         ssh = {
           enable = true;
-          port = 22;
+          port = 23;
           authorizedKeys = [swarm.masterSshKey];
-          hostKeys = ["/boot/keys/ssh_host_rsa_key"];
+          hostKeys = ["/etc/secrets/initrd/ssh_host_rsa_key"];
           shell = "/bin/cryptsetup-askpass";
         };
       };
+      preDeviceCommands = ''
+        touch /.keep_sshd
+      '';
     };
   };
 
@@ -86,6 +89,12 @@ with lib; {
 
   fileSystems."/var/log" = {
     device = "/nix/persist/var/log";
+    fsType = "none";
+    options = ["bind"];
+  };
+
+  fileSystems."/etc/secrets" = {
+    device = "/nix/persist/etc/secrets";
     fsType = "none";
     options = ["bind"];
   };
