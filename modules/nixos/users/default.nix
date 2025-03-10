@@ -5,7 +5,7 @@
 }:
 with lib; {
   config = mkMerge [
-    (mkIf config.swarm.hardware.nvidia.enable {
+    (mkIf (config.swarm.hardware.nvidia.enable || config.swarm.hardware.amdgpu.enable)  {
       users.users.${swarm.user}.extraGroups = [
         "video"
         "render"

@@ -10,7 +10,7 @@ with lib; {
     enable = mkOption {
       description = "Use grub as the bootloader";
       type = types.bool;
-      default = true;
+      default = false;
     };
   };
 

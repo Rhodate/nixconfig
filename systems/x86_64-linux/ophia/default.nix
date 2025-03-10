@@ -35,6 +35,8 @@ with lib; {
     signal.enable = true;
     gaming.steam.enable = true;
     syncthing.enable = true;
+    management.enable = true;
+    grub.enable = true;
   };
 
   imports = [
@@ -53,8 +55,6 @@ with lib; {
     device = "rpool/home";
     fsType = "zfs";
   };
-
-  users.groups.archive = {};
 
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/F614-4162";

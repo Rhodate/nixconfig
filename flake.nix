@@ -90,6 +90,8 @@
       url = "github:romkatv/powerlevel10k";
       flake = false;
     };
+    
+    inputs.kubenix.url = "github:hall/kubenix";
   };
 
   outputs = inputs:
