@@ -16,6 +16,7 @@ in {
   };
 
   config = mkIf cfg.enable {
+    nixpkgs.config.rocmSupport = true;
     hardware = {
       graphics = {
         enable = true;
@@ -25,7 +26,14 @@ in {
         enable = true;
         support32Bit.enable = true;
       };
+      # Opencl setup
+      graphics.extraPackages = with pkgs; [
+        rocmPackages.clr.icd
+      ];
     };
+    environment.systemPackages = with pkgs; [
+      clinfo
+    ];
 
     services.xserver.videoDrivers = ["amdgpu"];
   };

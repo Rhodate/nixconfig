@@ -30,6 +30,10 @@ with lib; {
       enable = true;
       implementation = "docker";
     };
+    ai.ollama = {
+      enable = true;
+      rocmOverrideGfx = "11.0.0";
+    };
     audio.enable = true;
     fs.type = "zfs";
     signal.enable = true;
@@ -45,6 +49,10 @@ with lib; {
 
   boot.initrd.availableKernelModules = ["nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod"];
   boot.kernelModules = ["kvm-amd" "amdgpu"];
+
+  swapDevices = [ {
+    device = "/dev/nvme1n1p1";
+  } ];
 
   fileSystems."/" = {
     device = "rpool/root";

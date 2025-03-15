@@ -22,6 +22,7 @@
       git.enable = true;
       btop.enable = true;
       newsboat.enable = true;
+      tenere.enable = true;
     };
   };
 
@@ -31,6 +32,8 @@
     cryptsetup
     libressl_3_9
     yazi
+    radeontop
+    xdg-utils
     hwinfo
     kdePackages.kdenlive
     syncthing

@@ -15,6 +15,7 @@ in {
   };
 
   config = mkIf cfg.enable {
+    nixpkgs.config.cudaSupport = true;
     hardware = {
       graphics.enable = true;
       nvidia-container-toolkit.enable = true;
