@@ -23,6 +23,11 @@ return require('lazy').setup({
   },
 
   {
+    'lucidph3nx/nvim-sops',
+    event = { 'BufEnter' },
+  },
+
+  {
     "monkoose/neocodeium",
     event = "VeryLazy",
     config = function()

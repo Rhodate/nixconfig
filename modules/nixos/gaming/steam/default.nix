@@ -27,7 +27,6 @@ with lib; {
     };
     environment.systemPackages = with pkgs; [
       mangohud
-      swarm.gamescope-launcher
     ];
   };
 }

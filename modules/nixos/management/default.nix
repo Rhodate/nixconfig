@@ -24,6 +24,7 @@ in {
 
       environment.systemPackages = with pkgs; [
         nix-output-monitor
+        swarm.sw
       ];
 
       environment.variables = {

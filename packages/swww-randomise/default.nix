@@ -7,8 +7,7 @@
   swww = inputs.swww.packages.${system}.swww;
 in
   writeShellScriptBin "swww-randomise" ''
-
-    #!/bin/bash
+    #!/bin/zsh
 
     # This script will randomly go through the files of a directory,
     # setting a different random wallpaper for each display

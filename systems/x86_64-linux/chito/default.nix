@@ -31,7 +31,10 @@ with lib; {
     systemdboot.enable = true;
     fs.type = "zfs";
     ssh.enable = true;
-    k3s.enable = true;
+    k3s = {
+      enable = true;
+      clusterInit = true;
+    };
   };
 
   imports = [
@@ -97,6 +100,7 @@ with lib; {
     device = "/nix/persist/etc/secrets";
     fsType = "none";
     options = ["bind"];
+    neededForBoot = true;
   };
 
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

@@ -23,12 +23,14 @@
       btop.enable = true;
       newsboat.enable = true;
       tenere.enable = true;
+      sw.enable = true;
     };
   };
 
   nixpkgs.config.allowUnfree = true;
 
   home.packages = with pkgs; [
+    whois
     cryptsetup
     libressl_3_9
     yazi

@@ -40,7 +40,6 @@ with lib; {
       hardware.enableAllFirmware = true;
       environment.systemPackages = with pkgs; [
         home-manager
-        swarm.gamescope-launcher
         snowfallorg.flake
         age
       ];

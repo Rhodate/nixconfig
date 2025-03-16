@@ -92,6 +92,10 @@
     };
 
     kubenix.url = "github:hall/kubenix";
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs:
@@ -110,6 +114,11 @@
       systems.modules.nixos = with inputs; [
         home-manager.nixosModules.home-manager
         hyprland.nixosModules.default
+        sops-nix.nixosModules.sops
+      ];
+
+      homes.modules = with inputs; [
+        sops-nix.homeManagerModules.sops
       ];
 
       overlays = with inputs; [
