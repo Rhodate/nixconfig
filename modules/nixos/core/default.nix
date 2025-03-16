@@ -93,6 +93,7 @@ with lib; {
           LC_TELEPHONE = cfg.locale.main;
           LC_MEASUREMENT = cfg.locale.main;
           LC_IDENTIFICATION = cfg.locale.main;
+          LC_ALL = cfg.locale.main;
         };
       };
     };
