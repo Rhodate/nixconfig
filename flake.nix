@@ -109,6 +109,7 @@
           name = "swarm";
           title = "swarm flake";
         };
+        root = ./nix;
       };
 
       systems.modules.nixos = with inputs; [
