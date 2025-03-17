@@ -23,7 +23,6 @@
       btop.enable = true;
       newsboat.enable = true;
       tenere.enable = true;
-      sw.enable = true;
     };
   };
 

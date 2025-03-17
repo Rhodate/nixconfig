@@ -118,10 +118,6 @@
         sops-nix.nixosModules.sops
       ];
 
-      homes.modules = with inputs; [
-        sops-nix.homeManagerModules.sops
-      ];
-
       overlays = with inputs; [
         snowfall-flake.overlays.default
         rust-overlay.overlays.default

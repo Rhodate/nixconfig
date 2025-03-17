@@ -15,7 +15,7 @@ with lib; {
   config = mkIf config.swarm.k3s.enable {
     sops.secrets.k3s-token = {
       format = "binary";
-      sopsFile = lib.swarm.secrets-path + /common/k3s.token;
+      sopsFile = snowfall.fs.get-file "secrets/common/k3s.token";
     };
     services.k3s = {
       enable = true;

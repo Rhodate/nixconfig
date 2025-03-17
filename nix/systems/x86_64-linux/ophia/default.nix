@@ -39,7 +39,10 @@ with lib; {
     signal.enable = true;
     gaming.steam.enable = true;
     syncthing.enable = true;
-    management.enable = true;
+    management = {
+      enable = true;
+      sw.enable = true;
+    };
     grub.enable = true;
   };
 

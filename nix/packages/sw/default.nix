@@ -14,7 +14,7 @@ writeShellScriptBin "sw" ''
       exit 1
     fi
 
-    host_config_file=$XDG_RUNTIME_DIR/sw/swarm-hosts.yaml
+    host_config_file=/etc/sw/swarm-hosts.yaml
     if [ ! -f $host_config_file ]; then
       echo "Config file $host_config_file does not exist"
       exit 1
@@ -29,7 +29,7 @@ writeShellScriptBin "sw" ''
 
         targetIp=$(${pkgs.yq}/bin/yq -r .''${targetHost} $host_config_file)
 
-        system=$(${pkgs.nix}/bin/nix build .\#nixosConfigurations.''${targetHost}.config.system.build.toplevel -L --print-out-paths)
+        system=$(${pkgs.nix}/bin/nix build .\#nixosConfigurations.''${targetHost}.config.system.build.toplevel -L --print-out-paths $@)
 
         ${pkgs.nix}/bin/nix-copy-closure --to ${swarm.user}@''${targetHost} $system
 
