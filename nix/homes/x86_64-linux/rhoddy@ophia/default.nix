@@ -49,6 +49,7 @@
     ripgrep
     deluge
     dnsutils
+    handbrake
     gnutar
     usbutils
     pciutils
