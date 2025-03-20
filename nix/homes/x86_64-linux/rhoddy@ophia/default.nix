@@ -73,6 +73,7 @@
     libtool
     parted
     pavucontrol
+    pulseaudio
     nodejs_22
     spotify
     libnotify

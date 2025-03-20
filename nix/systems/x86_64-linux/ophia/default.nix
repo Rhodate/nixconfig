@@ -55,7 +55,7 @@ with lib; {
 
   swapDevices = [
     {
-      device = "/dev/nvme1n1p1";
+      device = "/dev/disk/by-partuuid/0be106e1-0df2-4121-a350-42dc4a98f5c7";
     }
   ];
 
