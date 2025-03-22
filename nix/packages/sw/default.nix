@@ -5,7 +5,7 @@
   ...
 }:
 with lib;
-writeShellScriptBin "sw" ''
+  writeShellScriptBin "sw" ''
     #!/usr/bin/env zsh
     set -euo pipefail
 
@@ -39,5 +39,5 @@ writeShellScriptBin "sw" ''
       fi
     fi
 
-    
+
   ''

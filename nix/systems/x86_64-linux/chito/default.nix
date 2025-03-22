@@ -19,6 +19,11 @@
   ...
 }:
 with lib; {
+  imports = [
+    (modulesPath + "/installer/scan/not-detected.nix")
+    ./sops.nix
+  ];
+
   swarm = {
     hardware = {
       nvidia.enable = true;
@@ -31,15 +36,24 @@ with lib; {
     systemdboot.enable = true;
     fs.type = "zfs";
     ssh.enable = true;
-    k3s = {
-      enable = true;
-      clusterInit = true;
+    server = {
+      k3s = {
+        enable = true;
+        clusterInit = true;
+        san = [
+          "chito.rhodate.com"
+          "rhodate.com"
+        ];
+      };
+      services.route53-dyndns = {
+        enable = true;
+        hostedZoneId = "Z004213625PGR7UVYSB0C";
+        recordName = "chito.rhodate.com";
+        awsCredentialsFile = config.sops.secrets.route53-dyndns-credentials.path;
+        networkDevice = "enp5s0";
+      };
     };
   };
-
-  imports = [
-    (modulesPath + "/installer/scan/not-detected.nix")
-  ];
 
   security.sudo.wheelNeedsPassword = false;
 

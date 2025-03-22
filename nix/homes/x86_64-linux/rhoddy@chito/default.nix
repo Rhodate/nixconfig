@@ -5,7 +5,6 @@
       nvim.enable = true;
       zoxide.enable = true;
       btop.enable = true;
-      newsboat.enable = true;
     };
   };
 

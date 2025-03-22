@@ -11,3 +11,7 @@ creation_rules:
     key_groups:
       - age:
         - *admin_rhodate
+  - path_regex: secrets/server/.+$
+    key_groups:
+      - age:
+        - *server_chito
