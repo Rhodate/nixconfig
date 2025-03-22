@@ -52,6 +52,12 @@ with lib; {
         awsCredentialsFile = config.sops.secrets.route53-dyndns-credentials.path;
         networkDevice = "enp5s0";
       };
+      acme = {
+        enable = true;
+        awsCredentialsFile = config.sops.secrets.route53-acme-credentials.path;
+        hostedZoneId = "Z004213625PGR7UVYSB0C";
+        awsRegion = "ca-central-1";
+      };
     };
   };
 

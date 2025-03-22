@@ -13,21 +13,33 @@ with lib; {
     };
     san = mkOption {
       description = "k3s SANs";
-      type = types.listOf(types.str);
+      type = types.listOf (types.str);
       default = [];
     };
   };
   config = mkIf config.swarm.server.k3s.enable {
-    sops.secrets.k3s-token = {
-      format = "binary";
-      sopsFile = snowfall.fs.get-file "secrets/common/k3s.token";
+    sops = {
+
+      secrets = {
+        k3s-token = {
+          format = "binary";
+          sopsFile = snowfall.fs.get-file "secrets/common/k3s.token";
+        };
+      };
     };
+
+    environment.etc."rancher/k3s/registries.yaml".text = ''
+      mirrors:
+        "*":
+      '';
+
     services.k3s = {
       enable = true;
       role = "server";
       extraFlags = toString [
         "--debug"
-        # map over the san to `--tls-san <san>` for each san, in nix code
+        "--embedded-registry"
+        "--disable metrics-server"
         (concatStringsSep " " (concatMap (san: ["--tls-san" san]) config.swarm.server.k3s.san))
       ];
       tokenFile = config.sops.secrets.k3s-token.path;
