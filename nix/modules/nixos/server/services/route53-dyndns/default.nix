@@ -41,6 +41,12 @@ in {
       default = 300;
       description = "TTL for the record.";
     };
+
+    pollingPeriod = mkOption {
+      type = types.int;
+      default = 5;
+      description = "Polling period in seconds.";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -84,41 +90,67 @@ in {
       after = ["network.target"];
       wantedBy = ["multi-user.target"];
       serviceConfig = {
-        Type = "oneshot";
+        Type = "notify";
         User = "route53-dyndns";
+        Restart = "always";
+        NotifyAccess = "all";
+        TimeoutStartSec = 60;
       };
-      script = ''
-        export IPV6_ADDRESS=$(${pkgs.iproute2}/sbin/ip -6 addr show dev "${cfg.networkDevice}" | ${pkgs.gnugrep}/bin/grep -m 1 'inet6 ' | ${pkgs.gawk}/bin/awk '{print $2}' | ${pkgs.uutils-coreutils}/bin/uutils-cut -d/ -f1)
-
-        if [ -z "$IPV6_ADDRESS" ]; then
-          echo "Error: No IPv6 address found on device ${cfg.networkDevice}"
-          exit 1
-        fi
-
-        echo "$IPV6_ADDRESS"
-
+      script = with pkgs; ''
+        IPV6_ADDRESS=
+        systemd-notify STATUS="Initializing Route53 dynamic DNS"
         export AWS_CONFIG_FILE="${cfg.awsCredentialsFile}"
-        ${pkgs.awscli2}/bin/aws route53 change-resource-record-sets \
-          --hosted-zone-id "${cfg.hostedZoneId}" \
-          --change-batch '{
-            "Changes": [
-              {
-                "Action": "UPSERT",
-                "ResourceRecordSet": {
-                  "Name": "${cfg.recordName}",
-                  "Type": "AAAA",
-                  "TTL": ${builtins.toString cfg.ttl},
-                  "ResourceRecords": [
-                    {
-                      "Value": "'"$IPV6_ADDRESS"'"
-                    }
-                  ]
-                }
-              }
-            ]
-          }'
+        while : ; do
+          NEW_IPV6_ADDRESS=$(${iproute2}/sbin/ip -6 addr show dev "${cfg.networkDevice}" | ${gnugrep}/bin/grep -m 1 'inet6 ' | ${gawk}/bin/awk '{print $2}' | ${uutils-coreutils}/bin/uutils-cut -d/ -f1)
 
-        echo "Route53 record updated successfully."
+          if [ -z "$NEW_IPV6_ADDRESS" ]; then
+            echo "Error: No IPv6 address found on device ${cfg.networkDevice}"
+            exit 1
+          fi
+
+          if [ "$IPV6_ADDRESS" = "$NEW_IPV6_ADDRESS" ]; then
+            sleep ${toString cfg.pollingPeriod}
+            continue
+          fi
+
+          systemd-notify STATUS="Updating Route53 record from $IPV6_ADDRESS to $NEW_IPV6_ADDRESS"
+
+          ${awscli2}/bin/aws route53 change-resource-record-sets \
+              --cli-connect-timeout 15 \
+              --cli-read-timeout 15 \
+              --hosted-zone-id "${cfg.hostedZoneId}" \
+              --change-batch '{
+                "Changes": [
+                  {
+                    "Action": "UPSERT",
+                    "ResourceRecordSet": {
+                      "Name": "${cfg.recordName}",
+                      "Type": "AAAA",
+                      "TTL": ${toString cfg.ttl},
+                      "ResourceRecords": [
+                        {
+                          "Value": "'"$NEW_IPV6_ADDRESS"'"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }'
+
+
+          if [ $? -ne 0 ]; then
+            echo "Error: Failed to update Route53 record. Command exited with status $?"
+            systemd-notify --status="Failed to update Route53 record. Retrying in 5 seconds..."
+            systemd-notify BARRIER=1
+          else
+            echo "Updated Route53 record from $IPV6_ADDRESS to $NEW_IPV6_ADDRESS"
+            IPV6_ADDRESS="$NEW_IPV6_ADDRESS"
+            systemd-notify READY=1 STATUS="Monitoring for updates..."
+            systemd-notify BARRIER=1
+          fi
+
+          sleep ${toString cfg.pollingPeriod}
+        done
       '';
     };
   };
