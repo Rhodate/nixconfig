@@ -9,10 +9,5 @@ with lib; {
       ];
       default = "zsh";
     };
-    sopsAgeKeyFile = mkOption {
-      description = "Path to SOPS age key file";
-      type = types.str;
-      default = "";
-    };
   };
 }

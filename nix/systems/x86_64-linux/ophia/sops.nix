@@ -3,12 +3,8 @@
   config,
   ...
 }:
-with lib; let
-  keyFile = "/nix/secrets/sops/age/keys.txt";
-in {
-  sops.age.keyFile = keyFile;
-  # Make sure the user shell is aware of the sops key
-  home-manager.users.${swarm.user}.swarm.cli.sopsAgeKeyFile = keyFile;
+with lib; {
+  sops.age.keyFile = swarm.ophia.keyFile;
   sops.secrets.kubeconfig = {
     sopsFile = snowfall.fs.get-file "secrets/management/kubeconfig.yaml";
     format = "yaml";

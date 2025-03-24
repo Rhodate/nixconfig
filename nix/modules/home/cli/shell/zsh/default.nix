@@ -71,14 +71,9 @@ in {
           src = inputs.powerlevel10k;
         }
       ];
-      sessionVariables = mkMerge [
-        {
-          WORDCHARS = "\${WORDCHARS//\/}";
-        }
-        (mkIf (cfg.sopsAgeKeyFile != "") {
-          SOPS_AGE_KEY_FILE = cfg.sopsAgeKeyFile;
-        })
-      ];
+      sessionVariables = {
+        WORDCHARS = "\${WORDCHARS//\/}";
+      };
       shellAliases = {
         kssh = "kitty +kitty ssh";
         ls = "ls --color=auto";

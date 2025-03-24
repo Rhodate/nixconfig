@@ -37,7 +37,7 @@ with lib; {
     };
 
     home.file.".ssh/allowed_signers".text = ''
-      * ${swarm.masterSshKey} rhoddy@ophia
+      * ${swarm.masterSshKey}
     '';
 
     programs.gh = {

@@ -56,7 +56,6 @@
     usbutils
     pciutils
     lsof
-    sops
     firefox
     tor-browser-bundle-bin
     signal-desktop
@@ -83,9 +82,7 @@
     arandr
     inter
     playerctl
-    swaybg
     killall
-    playerctl
     blast
     vlc
     dotnetCorePackages.sdk_9_0
@@ -99,7 +96,6 @@
 
   wayland.windowManager.hyprland.settings.exec-once = [
     "hyprctl setcursor Bibata-Modern-Ice 22"
-    "swaybg -i ~/wallpaper -m fill"
     "kitty"
     "[workspace 2 silent] firefox"
     "[workspace 3 silent] discord"
