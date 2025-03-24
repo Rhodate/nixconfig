@@ -22,6 +22,7 @@ with lib; {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ./sops.nix
+    ./templates/certs.nix
   ];
 
   swarm = {
