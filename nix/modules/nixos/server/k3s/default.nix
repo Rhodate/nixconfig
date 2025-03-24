@@ -19,7 +19,6 @@ with lib; {
   };
   config = mkIf config.swarm.server.k3s.enable {
     sops = {
-
       secrets = {
         k3s-token = {
           format = "binary";
@@ -31,7 +30,7 @@ with lib; {
     environment.etc."rancher/k3s/registries.yaml".text = ''
       mirrors:
         "*":
-      '';
+    '';
 
     services.k3s = {
       enable = true;

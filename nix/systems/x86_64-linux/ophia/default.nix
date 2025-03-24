@@ -43,7 +43,11 @@ with lib; {
     fs.type = "zfs";
     signal.enable = true;
     gaming.steam.enable = true;
-    syncthing.enable = true;
+    syncthing = {
+      enable = true;
+      keyFile = config.sops.secrets.syncthing-key.path;
+      certFile = config.sops.secrets.syncthing-cert.path;
+    };
     management = {
       enable = true;
       sw.enable = true;

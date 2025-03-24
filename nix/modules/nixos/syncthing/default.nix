@@ -6,14 +6,22 @@
 with lib; {
   options.swarm.syncthing = {
     enable = mkEnableOption "Enable syncthing";
+    keyFile = mkOption {
+      type = types.path;
+      description = "Path to the syncthing key file (sops-nix output).";
+    };
+    certFile = mkOption {
+      type = types.path;
+      description = "Path to the syncthing cert file (sops-nix output).";
+    };
   };
 
   config = mkIf config.swarm.syncthing.enable {
     services.syncthing = {
       enable = true;
       openDefaultPorts = true;
-      key = "${./myconfig/key.pem}";
-      cert = "${./myconfig/cert.pem}";
+      key = config.swarm.syncthing.keyFile;
+      cert = config.swarm.syncthing.certFile;
       user = "syncthing";
       settings = {
         devices = {
