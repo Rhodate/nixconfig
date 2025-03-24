@@ -33,7 +33,12 @@ with lib;
 
         ${pkgs.nix}/bin/nix-copy-closure --to ${swarm.user}@''${targetHost} $system
 
-        ${pkgs.openssh}/bin/ssh -t ${swarm.user}@''${targetIp} sudo ''${system}/bin/switch-to-configuration switch
+        ${pkgs.openssh}/bin/ssh -t ${swarm.user}@''${targetIp} \
+          sudo systemd-run \
+            -E LOCALE_ARCHIVE \
+            -E NIXOS_INSTALL_BOOTLOADER=1 \
+            --collect --no-ask-password --pipe --quiet --service-type=exec --unit=swarm-rebuild-switch-to-configuration --wait \
+            ''${system}/bin/switch-to-configuration switch
       else
         ${pkgs.nh}/bin/nh os switch -- -j 8
       fi
