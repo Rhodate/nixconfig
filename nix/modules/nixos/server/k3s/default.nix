@@ -1,6 +1,7 @@
 {
   lib,
   config,
+  pkgs,
   ...
 }:
 with lib; {
@@ -39,6 +40,7 @@ with lib; {
         "--debug"
         "--embedded-registry"
         "--disable metrics-server"
+        "--cluster-cidr $(${pkgs.ndisc6}/bin/rdisc6 -1q ${config.swarm.hardware.networking.networkDevice})"
         (concatStringsSep " " (concatMap (san: ["--tls-san" san]) config.swarm.server.k3s.san))
       ];
       tokenFile = config.sops.secrets.k3s-token.path;

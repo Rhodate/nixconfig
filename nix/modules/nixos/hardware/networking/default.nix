@@ -16,6 +16,11 @@ with lib; {
       description = "The host id of this machine";
       type = str;
     };
+    networkDevice = mkOption {
+      description = "The network device to use";
+      type = str;
+      default = "eth0";
+    };
   };
 
   config = let

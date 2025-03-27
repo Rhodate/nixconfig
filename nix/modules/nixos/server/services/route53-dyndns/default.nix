@@ -6,6 +6,7 @@
 }:
 with lib; let
   cfg = config.swarm.server.services.route53-dyndns;
+  networkDevice = config.swarm.hardware.networking.networkDevice;
 in {
   options.swarm.server.services.route53-dyndns = {
     enable = mkEnableOption "Enable Route53 dynamic DNS";
@@ -23,11 +24,6 @@ in {
     awsCredentialsFile = mkOption {
       type = types.path;
       description = "Path to the AWS credentials file (sops-nix output).";
-    };
-
-    networkDevice = mkOption {
-      type = types.str;
-      description = "Name of the network device to get IPv6 address from.";
     };
 
     serviceUserName = mkOption {
@@ -64,10 +60,6 @@ in {
         message = "awsCredentialsFile is required";
       }
       {
-        assertion = cfg.networkDevice != "";
-        message = "networkDevice is required";
-      }
-      {
         assertion = cfg.serviceUserName != "";
         message = "serviceUserName is required";
       }
@@ -101,10 +93,10 @@ in {
         systemd-notify STATUS="Initializing Route53 dynamic DNS"
         export AWS_CONFIG_FILE="${cfg.awsCredentialsFile}"
         while : ; do
-          NEW_IPV6_ADDRESS=$(${iproute2}/sbin/ip -6 addr show dev "${cfg.networkDevice}" | ${gnugrep}/bin/grep -m 1 'inet6 ' | ${gawk}/bin/awk '{print $2}' | ${uutils-coreutils}/bin/uutils-cut -d/ -f1)
+          NEW_IPV6_ADDRESS=$(${iproute2}/sbin/ip -6 addr show dev "${networkDevice}" | ${gnugrep}/bin/grep -m 1 'inet6 ' | ${gawk}/bin/awk '{print $2}' | ${uutils-coreutils}/bin/uutils-cut -d/ -f1)
 
           if [ -z "$NEW_IPV6_ADDRESS" ]; then
-            echo "Error: No IPv6 address found on device ${cfg.networkDevice}"
+            echo "Error: No IPv6 address found on device ${networkDevice}"
             exit 1
           fi
 

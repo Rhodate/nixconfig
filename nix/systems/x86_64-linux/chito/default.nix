@@ -16,7 +16,10 @@ with lib; {
   swarm = {
     hardware = {
       nvidia.enable = true;
-      networking.hostId = "d86dc3dc";
+      networking = {
+        hostId = "d86dc3dc";
+        networkDevice = "enp5s0";
+      };
     };
     virtualization = {
       enable = true;
@@ -39,7 +42,6 @@ with lib; {
         hostedZoneId = "Z004213625PGR7UVYSB0C";
         recordName = "chito.rhodate.com";
         awsCredentialsFile = config.sops.secrets.route53-dyndns-credentials.path;
-        networkDevice = "enp5s0";
       };
       acme = {
         enable = true;

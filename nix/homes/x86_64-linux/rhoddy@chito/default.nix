@@ -18,7 +18,7 @@
     pciutils
     lsof
     killall
-    k9s
+    kubectl
   ];
 
   home.stateVersion = "24.11";

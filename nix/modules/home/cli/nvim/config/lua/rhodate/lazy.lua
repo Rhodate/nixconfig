@@ -27,14 +27,26 @@ return require('lazy').setup({
     event = { 'BufEnter' },
   },
 
+
   {
-    "monkoose/neocodeium",
-    event = "VeryLazy",
+    "Exafunction/codeium.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "hrsh7th/nvim-cmp",
+    },
     config = function()
-      local neocodeium = require("neocodeium")
-      neocodeium.setup()
-      vim.keymap.set("i", "<A-f>", neocodeium.accept)
-    end,
+      require("codeium").setup({
+        virtual_text = {
+          enabled = true,
+          key_bindings = {
+            accept = "<A-f>",
+          },
+          workspace_root = "use_lsp",
+          enable_cmp_source = false,
+          enable_chat = true,
+        },
+      })
+    end
   },
 
   {
