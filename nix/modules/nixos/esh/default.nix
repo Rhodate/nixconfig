@@ -21,6 +21,11 @@ with types; let
         type = types.nonEmptyStr;
         description = "Path to the destination location.";
       };
+      environmentFile = mkOption {
+        type = types.str;
+        description = "The template name that generates the environment file";
+        default = "";
+      };
     };
   };
 in {
@@ -37,10 +42,15 @@ in {
           description = "Applies a template file to a target path.";
           after = ["network.target"];
           wantedBy = ["multi-user.target"];
-          serviceConfig = {
-            Type = "oneshot";
-            User = "root";
-          };
+          serviceConfig = mkMerge [
+            {
+              Type = "oneshot";
+              User = "root";
+            }
+            (mkIf (templateOpts.environmentFile != "") {
+              EnvironmentFile = config.swarm.esh.templates.${templateOpts.environmentFile}.destination;
+            })
+          ];
           script = ''
             ${pkgs.uutils-coreutils}/bin/uutils-mkdir -p $(dirname ${templateOpts.destination})
             ${pkgs.esh}/bin/esh \

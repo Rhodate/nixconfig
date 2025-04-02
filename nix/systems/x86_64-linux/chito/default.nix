@@ -16,10 +16,7 @@ with lib; {
   swarm = {
     hardware = {
       nvidia.enable = true;
-      networking = {
-        hostId = "d86dc3dc";
-        networkDevice = "enp5s0";
-      };
+      networking = swarm.networking.chito;
     };
     virtualization = {
       enable = true;

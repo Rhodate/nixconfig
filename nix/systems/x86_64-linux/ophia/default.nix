@@ -14,19 +14,18 @@ with lib; {
     hardware = {
       nvidia.enable = false;
       amdgpu.enable = true;
-      networking = {
-        hostId = "36aa1853";
-        networkDevice = "enp14s0";
-      };
+      networking = swarm.networking.ophia;
       input-remapper.enable = true;
     };
     virtualization = {
       enable = true;
       implementation = "docker";
     };
-    ai.ollama = {
-      enable = true;
-      rocmOverrideGfx = "11.0.0";
+    ai = {
+      ollama = {
+        enable = true;
+        rocmOverrideGfx = "11.0.0";
+      };
     };
     audio.enable = true;
     fs.type = "zfs";

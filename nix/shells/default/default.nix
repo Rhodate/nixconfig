@@ -11,5 +11,7 @@ with lib;
     '';
     packages = with pkgs; [
       sops
+      ndisc6
+      swarm.ipv6-splitter
     ];
   }

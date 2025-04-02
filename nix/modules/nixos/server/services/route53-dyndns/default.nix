@@ -81,10 +81,15 @@ in {
       description = "Maintains a Route53 record";
       after = ["network.target"];
       wantedBy = ["multi-user.target"];
+      unitConfig = {
+        StartLimitBurst = 10;
+        StartLimitIntervalSec = 900;
+      };
       serviceConfig = {
         Type = "notify";
         User = "route53-dyndns";
         Restart = "always";
+        RestartSec = 90;
         NotifyAccess = "all";
         TimeoutStartSec = 60;
       };

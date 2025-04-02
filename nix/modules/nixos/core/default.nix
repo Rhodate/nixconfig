@@ -39,9 +39,9 @@ with lib; {
       security.rtkit.enable = true;
       hardware.enableAllFirmware = true;
       environment.systemPackages = with pkgs; [
-        home-manager
-        snowfallorg.flake
         age
+        iputils
+        inetutils
       ];
       nixpkgs.config = {
         allowUnfree = true;

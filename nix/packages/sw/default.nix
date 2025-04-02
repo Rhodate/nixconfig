@@ -22,16 +22,38 @@ with lib;
 
     command=$1
     shift
+    host=
+    debug=
+    while [ "$#" -gt 0 ]; do
+      case "$1" in
+        --debug)
+          debug=1
+          ;;
+        -d)
+          debug=1
+          ;;
+        *)
+          if [ -n "$host" ]; then
+            echo "Only expected one host to be specified"
+            exit 1
+          fi
+          host=$1
+          ;;
+      esac
+      shift
+    done
+
+    buildArgs=
+    if [ -n "$debug" ]; then
+      buildArgs="--show-trace"
+    fi
+
     if [ "$command" = "deploy" ]; then
-      if [ "$#" -gt 0 ]; then
-        targetHost=$1
-        shift
+      if [ -n "$host" ]; then
+        targetIp=$(${pkgs.yq}/bin/yq -r .''${host} $host_config_file)
 
-        targetIp=$(${pkgs.yq}/bin/yq -r .''${targetHost} $host_config_file)
-
-        system=$(${pkgs.nix}/bin/nix build .\#nixosConfigurations.''${targetHost}.config.system.build.toplevel -L --print-out-paths $@)
-
-        ${pkgs.nix}/bin/nix-copy-closure --to ${swarm.user}@''${targetHost} $system
+        system=$(${pkgs.nix}/bin/nix build .\#nixosConfigurations.''${host}.config.system.build.toplevel $buildArgs -L --print-out-paths)
+        ${pkgs.nix}/bin/nix-copy-closure --to ${swarm.user}@''${targetIp} $system
 
         ${pkgs.openssh}/bin/ssh -t ${swarm.user}@''${targetIp} \
           sudo systemd-run \
@@ -40,9 +62,7 @@ with lib;
             --collect --no-ask-password --pipe --quiet --service-type=exec --unit=swarm-rebuild-switch-to-configuration --wait \
             ''${system}/bin/switch-to-configuration switch
       else
-        ${pkgs.nh}/bin/nh os switch -- -j 8
+        ${pkgs.nh}/bin/nh os switch -- $buildArgs -j 4
       fi
     fi
-
-
   ''

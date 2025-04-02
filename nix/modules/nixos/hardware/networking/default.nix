@@ -27,7 +27,13 @@ with lib; {
     cfg = config.swarm.hardware.networking;
   in
     mkIf cfg.enable {
-      networking.useDHCP = lib.mkDefault true;
-      networking.hostId = cfg.hostId;
+      networking = {
+        useDHCP = lib.mkDefault true;
+        hostId = cfg.hostId;
+        enableIPv6 = true;
+      };
+
+      boot.kernel.sysctl."net.ipv6.conf.all.forwarding" = "1";
+      boot.kernel.sysctl."net.ipv6.conf.default.forwarding" = "1";
     };
 }

@@ -5,7 +5,7 @@
       dunst.enable = true;
       waybar.enable = true;
       swww = {
-        enable = true;
+        enable = false;
         defaultWallpaper = ./wallpapers/alexander-streng-ezgif-com-optimize.gif;
       };
       kitty.enable = true;
