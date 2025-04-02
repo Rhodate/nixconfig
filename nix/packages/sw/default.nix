@@ -55,12 +55,28 @@ with lib;
         system=$(${pkgs.nix}/bin/nix build .\#nixosConfigurations.''${host}.config.system.build.toplevel $buildArgs -L --print-out-paths)
         ${pkgs.nix}/bin/nix-copy-closure --to ${swarm.user}@''${targetIp} $system
 
-        ${pkgs.openssh}/bin/ssh -t ${swarm.user}@''${targetIp} \
-          sudo systemd-run \
-            -E LOCALE_ARCHIVE \
-            -E NIXOS_INSTALL_BOOTLOADER=1 \
-            --collect --no-ask-password --pipe --quiet --service-type=exec --unit=swarm-rebuild-switch-to-configuration --wait \
-            ''${system}/bin/switch-to-configuration switch
+        ${pkgs.openssh}/bin/ssh -t ${swarm.user}@''${host}.rhodate.com "
+          # Register the new system profile
+          sudo nix-env -p /nix/var/nix/profiles/system --set $system
+          
+          # Switch to the new configuration
+          sudo NIXOS_INSTALL_BOOTLOADER=1 $system/bin/switch-to-configuration switch
+          
+          # Verify the profile was updated
+          echo 'New system profile:'
+          sudo readlink -f /nix/var/nix/profiles/system
+          
+          echo 'System generations:'
+          sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | tail -n 3
+          
+          if [ -d /boot/loader/entries ]; then
+            echo 'Boot entries (systemd-boot):'
+            sudo ls -la /boot/loader/entries/
+          elif [ -f /boot/grub/grub.cfg ]; then
+            echo 'GRUB configuration exists'
+            sudo grep 'menuentry' /boot/grub/grub.cfg | head -n 5
+          fi
+        "
       else
         ${pkgs.nh}/bin/nh os switch -- $buildArgs -j 4
       fi

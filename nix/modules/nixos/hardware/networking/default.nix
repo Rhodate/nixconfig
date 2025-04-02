@@ -1,8 +1,6 @@
 {
-  options,
   config,
   lib,
-  pkgs,
   ...
 }:
 with lib; {
@@ -31,6 +29,7 @@ with lib; {
         useDHCP = lib.mkDefault true;
         hostId = cfg.hostId;
         enableIPv6 = true;
+        nftables.enable = true;
       };
 
       boot.kernel.sysctl."net.ipv6.conf.all.forwarding" = "1";

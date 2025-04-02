@@ -1,7 +1,6 @@
 {
   lib,
   config,
-  pkgs,
   ...
 }:
 with lib; {
@@ -41,7 +40,7 @@ with lib; {
     services.k3s = {
       enable = true;
       role = "server";
-      extraFlags = toString [
+      extraFlags = [
         "--disable metrics-server"
         "--flannel-ipv6-masq"
         "--cluster-cidr='fd02::/56'"
@@ -62,7 +61,7 @@ with lib; {
       ];
       allowedTCPPortRanges = [
         {
-          from = 2397;
+          from = 2379;
           to = 2380;
         }
       ];
@@ -71,8 +70,15 @@ with lib; {
         51821
       ];
     };
+
     fileSystems."/var/lib/rancher/k3s" = {
       device = "/nix/persist/var/lib/rancher/k3s";
+      fsType = "none";
+      options = ["bind"];
+    };
+
+    fileSystems."/etc/rancher/k3s" = {
+      device = "/nix/persist/etc/rancher/k3s";
       fsType = "none";
       options = ["bind"];
     };
