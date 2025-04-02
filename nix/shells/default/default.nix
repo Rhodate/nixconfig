@@ -7,11 +7,13 @@
 with lib;
   mkShell {
     shellHook = ''
-      export SOPS_AGE_KEY_FILE=${swarm.ophia.keyFile};
+      export SOPS_AGE_KEY_FILE=${toString swarm.ophia.keyFile}
     '';
+    
     packages = with pkgs; [
       sops
-      ndisc6
-      swarm.ipv6-splitter
+      opentofu
+      k9s
+      helm
     ];
   }

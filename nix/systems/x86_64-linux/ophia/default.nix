@@ -42,6 +42,28 @@ with lib; {
       sw.enable = true;
     };
     grub.enable = true;
+    server = {
+      k3s = {
+        enable = true;
+        clusterInit = true;
+        san = [
+          "ophia.rhodate.com"
+          "rhodate.com"
+        ];
+      };
+      services.route53-dyndns = {
+        enable = true;
+        hostedZoneId = "Z004213625PGR7UVYSB0C";
+        recordName = "ophia.rhodate.com";
+        awsCredentialsFile = config.sops.secrets.route53-dyndns-credentials.path;
+      };
+      acme = {
+        enable = true;
+        awsCredentialsFile = config.sops.secrets.route53-acme-credentials.path;
+        hostedZoneId = "Z004213625PGR7UVYSB0C";
+        awsRegion = "ca-central-1";
+      };
+    };
   };
 
   boot.initrd.availableKernelModules = ["nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod"];

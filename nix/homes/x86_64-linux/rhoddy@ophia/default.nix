@@ -31,7 +31,6 @@
   home.packages = with pkgs; [
     whois
     kubectl
-    k9s
     cryptsetup
     libressl_3_9
     yazi

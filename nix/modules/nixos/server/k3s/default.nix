@@ -21,6 +21,11 @@ with lib; {
       type = types.int;
       default = 80;
     };
+    clusterDns = mkOption {
+      description = "k3s DNS";
+      type = types.str;
+      default = "k8s.rhodate.com";
+    };
   };
   config = mkIf config.swarm.server.k3s.enable {
     sops = {
@@ -45,10 +50,21 @@ with lib; {
         "--flannel-ipv6-masq"
         "--cluster-cidr='fd02::/56'"
         "--service-cidr='fd01::/112'"
+        "--server=https://${config.swarm.server.k3s.clusterDns}:6443"
         (concatStringsSep " " (concatMap (san: ["--tls-san" san]) config.swarm.server.k3s.san))
+        "--tls-san=${config.swarm.server.k3s.clusterDns}"
       ];
       tokenFile = config.sops.secrets.k3s-token.path;
       clusterInit = config.swarm.server.k3s.clusterInit;
+      manifests."tfstate-namespace" = {
+        content = {
+          apiVersion = "v1";
+          kind = "Namespace";
+          metadata = {
+            name = "tfstate";
+          };
+        };
+      };
     };
 
     networking.firewall = {
