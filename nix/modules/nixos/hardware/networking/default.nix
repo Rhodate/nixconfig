@@ -19,6 +19,11 @@ with lib; {
       type = str;
       default = "eth0";
     };
+    linkLocalIpv6Cidr = mkOption {
+      description = "The link local ipv6 cidr";
+      type = str;
+      default = "fe80::/64";
+    };
   };
 
   config = let
@@ -29,10 +34,10 @@ with lib; {
         useDHCP = lib.mkDefault true;
         hostId = cfg.hostId;
         enableIPv6 = true;
-        nftables.enable = true;
       };
 
       boot.kernel.sysctl."net.ipv6.conf.all.forwarding" = "1";
       boot.kernel.sysctl."net.ipv6.conf.default.forwarding" = "1";
+      boot.kernel.sysctl."net.ipv6.conf.all.accept_ra" = "2";
     };
 }

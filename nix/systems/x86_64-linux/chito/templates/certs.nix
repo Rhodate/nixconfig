@@ -1,5 +1,9 @@
-{pkgs, ...}: let
-  certPath = "/var/lib/acme/rhodate.com/";
+{
+  pkgs,
+  lib,
+  ...
+}: let
+  certPath = "/var/lib/acme/${lib.swarm.domainName}/";
 in {
   config.swarm.esh.templates = {
     tls-certificate = {

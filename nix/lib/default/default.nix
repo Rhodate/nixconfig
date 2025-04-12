@@ -7,6 +7,8 @@
     keyFile = "/nix/secrets/sops/age/keys.txt";
   };
 
+  domainName = "rhodate.com";
+
   networking = {
     chito = {
       hostId = "d86dc3dc";

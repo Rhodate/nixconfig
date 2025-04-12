@@ -28,8 +28,8 @@ in {
     security.acme = {
       acceptTerms = true;
       defaults.email = "benxandercode@gmail.com";
-      certs."rhodate.com" = {
-        domain = "*.rhodate.com";
+      certs.${swarm.domainName} = {
+        domain = "*.${swarm.domainName}";
         dnsProvider = "route53";
         environmentFile = "${
           pkgs.writeText "aws-creds" ''

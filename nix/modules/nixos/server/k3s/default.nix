@@ -14,17 +14,30 @@ with lib; {
     san = mkOption {
       description = "k3s SANs";
       type = types.listOf (types.str);
-      default = [];
+      default = [
+        "${config.networking.hostName}.${swarm.domainName}"
+        "${swarm.domainName}"
+      ];
     };
-    clusterCidrPrefixLength = mkOption {
+    clusterCidr = mkOption {
       description = "k3s CIDR prefix length";
-      type = types.int;
-      default = 80;
+      type = types.str;
+      default = "fd02::/56";
+    };
+    serviceCidr = mkOption {
+      description = "k3s service CIDR prefix length";
+      type = types.str;
+      default = "fd01::/112";
     };
     clusterDns = mkOption {
       description = "k3s DNS";
       type = types.str;
-      default = "k8s.rhodate.com";
+      default = "k8s.${swarm.domainName}";
+    };
+    zfsStorageDisks = mkOption {
+      description = "path to k3s ZFS storage disks";
+      type = types.listOf (types.str);
+      default = [];
     };
   };
   config = mkIf config.swarm.server.k3s.enable {
@@ -48,8 +61,8 @@ with lib; {
       extraFlags = [
         "--disable metrics-server"
         "--flannel-ipv6-masq"
-        "--cluster-cidr='fd02::/56'"
-        "--service-cidr='fd01::/112'"
+        "--cluster-cidr='${config.swarm.server.k3s.clusterCidr}'"
+        "--service-cidr='${config.swarm.server.k3s.serviceCidr}'"
         "--server=https://${config.swarm.server.k3s.clusterDns}:6443"
         (concatStringsSep " " (concatMap (san: ["--tls-san" san]) config.swarm.server.k3s.san))
         "--tls-san=${config.swarm.server.k3s.clusterDns}"
@@ -67,28 +80,34 @@ with lib; {
       };
     };
 
-    networking.firewall = {
-      allowedTCPPorts = [
+    swarm.hardware.networking.firewall = {
+      localTcpPorts.k3s = [
         6443
         10250
         443
         5001
-        6443
+        2379
+        2380
       ];
-      allowedTCPPortRanges = [
-        {
-          from = 2379;
-          to = 2380;
-        }
-      ];
-      allowedUDPPorts = [
+
+      localUdpPorts.k3s = [
         8472
         51821
+      ];
+
+      extraLocalCidrs = [
+        "${config.swarm.server.k3s.clusterCidr}"
       ];
     };
 
     fileSystems."/var/lib/rancher/k3s" = {
       device = "/nix/persist/var/lib/rancher/k3s";
+      fsType = "none";
+      options = ["bind"];
+    };
+
+    fileSystems."/var/local" = {
+      device = "/nix/persist/var/local";
       fsType = "none";
       options = ["bind"];
     };

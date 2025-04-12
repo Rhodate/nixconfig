@@ -23,6 +23,7 @@ with lib; {
       key = config.swarm.syncthing.keyFile;
       cert = config.swarm.syncthing.certFile;
       user = "syncthing";
+      group = "syncthing";
       settings = {
         devices = {
           "galazy-s23-ultra" = {id = "ELKEX3W-EUIIOUM-QONMXGQ-EMMTNE7-HNVFSG2-EIUQHU5-QJ7GWGB-U4PVTQB";};
@@ -42,12 +43,10 @@ with lib; {
     };
     systemd = {
       tmpfiles.rules = mkMerge [
-        ["d /home/${swarm.user} 0750 ${swarm.user} syncthing"]
         (builtins.map (folder: "d ${folder.path} 2770 ${swarm.user} syncthing") (builtins.attrValues config.services.syncthing.settings.folders))
       ];
       services.syncthing = {
         environment.STNODEFAULTFOLDER = "true";
-        serviceConfig.UMask = "0007";
       };
     };
   };

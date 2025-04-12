@@ -50,25 +50,23 @@ with lib;
 
     if [ "$command" = "deploy" ]; then
       if [ -n "$host" ]; then
-        targetIp=$(${pkgs.yq}/bin/yq -r .''${host} $host_config_file)
-
         system=$(${pkgs.nix}/bin/nix build .\#nixosConfigurations.''${host}.config.system.build.toplevel $buildArgs -L --print-out-paths)
-        ${pkgs.nix}/bin/nix-copy-closure --to ${swarm.user}@''${targetIp} $system
+        ${pkgs.nix}/bin/nix-copy-closure --to ${swarm.user}@''${host} $system
 
-        ${pkgs.openssh}/bin/ssh -t ${swarm.user}@''${host}.rhodate.com "
+        ${pkgs.openssh}/bin/ssh -t ${swarm.user}@''${host} "
           # Register the new system profile
           sudo nix-env -p /nix/var/nix/profiles/system --set $system
-          
+
           # Switch to the new configuration
           sudo NIXOS_INSTALL_BOOTLOADER=1 $system/bin/switch-to-configuration switch
-          
+
           # Verify the profile was updated
           echo 'New system profile:'
           sudo readlink -f /nix/var/nix/profiles/system
-          
+
           echo 'System generations:'
           sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | tail -n 3
-          
+
           if [ -d /boot/loader/entries ]; then
             echo 'Boot entries (systemd-boot):'
             sudo ls -la /boot/loader/entries/

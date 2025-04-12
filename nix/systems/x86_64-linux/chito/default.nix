@@ -29,16 +29,19 @@ with lib; {
       k3s = {
         enable = true;
         clusterInit = true;
-        san = [
-          "chito.rhodate.com"
-          "rhodate.com"
+        zfsStorageDisks = [
+          "/dev/zvol/zroot/mayastor"
         ];
       };
       services.route53-dyndns = {
         enable = true;
+
         hostedZoneId = "Z004213625PGR7UVYSB0C";
-        recordName = "chito.rhodate.com";
         awsCredentialsFile = config.sops.secrets.route53-dyndns-credentials.path;
+        records = {
+          git = {};
+          k8s = {};
+        };
       };
       acme = {
         enable = true;

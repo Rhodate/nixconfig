@@ -46,16 +46,18 @@ with lib; {
       k3s = {
         enable = true;
         clusterInit = true;
-        san = [
-          "ophia.rhodate.com"
-          "rhodate.com"
+        zfsStorageDisks = [
+          "/dev/disk/by-id/nvme-eui.0025385c2140361b"
         ];
       };
       services.route53-dyndns = {
         enable = true;
         hostedZoneId = "Z004213625PGR7UVYSB0C";
-        recordName = "ophia.rhodate.com";
         awsCredentialsFile = config.sops.secrets.route53-dyndns-credentials.path;
+        records = {
+          git = {};
+          k8s = {};
+        };
       };
       acme = {
         enable = true;
@@ -68,12 +70,6 @@ with lib; {
 
   boot.initrd.availableKernelModules = ["nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod"];
   boot.kernelModules = ["kvm-amd" "amdgpu"];
-
-  swapDevices = [
-    {
-      device = "/dev/disk/by-partuuid/0be106e1-0df2-4121-a350-42dc4a98f5c7";
-    }
-  ];
 
   fileSystems."/" = {
     device = "rpool/root";

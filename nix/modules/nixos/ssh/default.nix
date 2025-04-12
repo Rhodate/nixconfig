@@ -21,6 +21,7 @@ with lib; {
         enable = true;
         settings.PasswordAuthentication = false;
         settings.KbdInteractiveAuthentication = false;
+        ports = [222];
       };
       users.users.${swarm.user}.openssh.authorizedKeys.keys = [
         swarm.masterSshKey

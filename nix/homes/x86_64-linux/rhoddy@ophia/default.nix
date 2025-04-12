@@ -29,10 +29,12 @@
   nixpkgs.config.allowUnfree = true;
 
   home.packages = with pkgs; [
+    k9s
     whois
     kubectl
     cryptsetup
     libressl_3_9
+    kubernetes-helm
     yazi
     radeontop
     xdg-utils

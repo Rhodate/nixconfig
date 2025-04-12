@@ -20,6 +20,7 @@ in {
         "podman"
         "git"
         "lxd"
+        "syncthing"
       ];
   };
 }
