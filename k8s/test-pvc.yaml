@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: mayastor-1  # Replace with your StorageClass name
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+spec:
+  containers:
+    - name: my-container
+      image: nginx
+      volumeMounts:
+        - name: my-volume
+          mountPath: /data
+  volumes:
+    - name: my-volume
+      persistentVolumeClaim:
+        claimName: my-pvc
+---
+apiVersion: storage.k8s.io/v1  
+kind: StorageClass   
+metadata:  
+  name: mayastor-1   
+  namespace: mayastor
+parameters:
+  ioTimeout: "60"    
+  local: "true" 
+  protocol: nvmf
+  repl: "2"
+allowVolumeExpansion: true
+provisioner: io.openebs.csi-mayastor
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer

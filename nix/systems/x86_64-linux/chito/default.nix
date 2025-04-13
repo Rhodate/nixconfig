@@ -28,7 +28,6 @@ with lib; {
     server = {
       k3s = {
         enable = true;
-        clusterInit = true;
         zfsStorageDisks = [
           "/dev/zvol/zroot/mayastor"
         ];
@@ -69,7 +68,7 @@ with lib; {
   #       ssh = {
   #         enable = true;
   #         port = 23;
-  #         authorizedKeys = [swarm.masterSshKey];
+  #         authorizedKeys = swarm.publicKeys;
   #         hostKeys = ["/etc/secrets/initrd/ssh_host_rsa_key"];
   #         shell = "/bin/cryptsetup-askpass";
   #       };

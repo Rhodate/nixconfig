@@ -37,7 +37,7 @@ with lib; {
     };
 
     home.file.".ssh/allowed_signers".text = ''
-      * ${swarm.masterSshKey}
+      ${concatStringsSep "\n" (map (key: "* ${key}") lib.swarm.publicKeys)}
     '';
 
     programs.gh = {

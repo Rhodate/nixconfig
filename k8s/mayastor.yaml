@@ -1,0 +1,10 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: mayastor
+  namespace: kube-system
+spec:
+  chart: https://%{KUBERNETES_API}%/static/charts/mayastor.tgz
+  createNamespace: true
+  targetNamespace: mayastor
+  valuesContent: '{"etcd":{"affinity":{},"replicaCount":2},"eventing":{"enabled":false},"obs":{"callhome":{"enabled":false}}}'

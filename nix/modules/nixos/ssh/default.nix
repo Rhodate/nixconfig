@@ -23,9 +23,7 @@ with lib; {
         settings.KbdInteractiveAuthentication = false;
         ports = [222];
       };
-      users.users.${swarm.user}.openssh.authorizedKeys.keys = [
-        swarm.masterSshKey
-      ];
+      users.users.${swarm.user}.openssh.authorizedKeys.keys = swarm.publicKeys;
 
       # Use persistent SSH keys
       environment.etc."ssh/ssh_host_rsa_key".source = "/etc/secrets/ssh/ssh_host_rsa_key";

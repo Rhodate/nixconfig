@@ -5,9 +5,6 @@ data "sops_file" "secrets" {
 resource "kubernetes_storage_class" "openebs-1replica" {
   metadata {
     name        = "mayastor-1"
-    annotations = {
-      "storageclass.kubernetes.io/is-default-class" = "true" # Marks this as the default StorageClass
-    }
   }
   storage_provisioner = "io.openebs.csi-mayastor"
   reclaim_policy = "Delete"
@@ -23,6 +20,9 @@ resource "kubernetes_storage_class" "openebs-1replica" {
 resource "kubernetes_storage_class" "openebs-2replica" {
   metadata {
     name        = "mayastor-2"
+    annotations = {
+      "storageclass.kubernetes.io/is-default-class" = "true" # Marks this as the default StorageClass
+    }
   }
   storage_provisioner = "io.openebs.csi-mayastor"
   reclaim_policy = "Delete"
@@ -44,10 +44,10 @@ module "gitea" {
   admin_password       = data.sops_file.secrets.data["gitea_admin_password"]
   admin_user           = "rhodate"
   tls_secret_name      = "tls-certificate"
-  storage_class        = kubernetes_storage_class.openebs-1replica.metadata[0].name
+  storage_class        = kubernetes_storage_class.openebs-2replica.metadata[0].name
   data_volume_size     = "10Gi"
   postgres_volume_size = "5Gi"
 
-  depends_on = [ kubernetes_storage_class.openebs-1replica ]
+  depends_on = [ kubernetes_storage_class.openebs-2replica ]
 }
 

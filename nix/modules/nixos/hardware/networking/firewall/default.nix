@@ -55,6 +55,8 @@ in {
     networking.nftables.enable = true;
     networking.nftables.tables = {};
 
+    boot.kernelModules = [ "xt_MASQUERADE" ];
+
     systemd.services.dynamic-default-firewall = {
       description = "Dynamic default nftables firewall";
       after = ["network-online.target"];
@@ -106,7 +108,6 @@ in {
         EOF
 
 
-        # For each prefix, generate accept rules with comments
         for prefix in "$prefix4" "$ula6" "$public6" ${lib.concatMapStringsSep " " (cidr: "\"${cidr}\"") cfg.extraLocalCidrs}; do
           if [ -n "$prefix" ]; then
             if [[ "$prefix" == *:* ]]; then
@@ -115,31 +116,8 @@ in {
               proto="ip"
             fi
 
-            echo "    $proto saddr $prefix accept # local" >> "$ruleset"
-
-            ${lib.concatMapStringsSep "\n" (
-          comment: let
-            ports = lib.getAttrFromPath [comment] cfg.localTcpPorts;
-          in
-            lib.concatMapStringsSep "\n" (
-              port: ''
-                echo "    $proto saddr $prefix tcp dport ${toString port} accept # ${comment}" >> "$ruleset"
-              ''
-            )
-            ports
-        ) (lib.attrNames cfg.localTcpPorts)}
-
-            ${lib.concatMapStringsSep "\n" (
-          group: let
-            ports = lib.getAttrFromPath [group] cfg.localUdpPorts;
-          in
-            lib.concatMapStringsSep "\n" (
-              port: ''
-                echo "    $proto saddr $prefix udp dport ${toString port} accept # ${group}" >> "$ruleset"
-              ''
-            )
-            ports
-        ) (lib.attrNames cfg.localUdpPorts)}
+            echo "    $proto saddr $prefix tcp dport { 1-65535 } accept" >> "$ruleset"
+            echo "    $proto saddr $prefix udp dport { 1-65535 } accept" >> "$ruleset"
           fi
         done
 

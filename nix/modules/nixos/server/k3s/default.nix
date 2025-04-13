@@ -1,6 +1,7 @@
 {
   lib,
   config,
+  pkgs,
   ...
 }:
 with lib; {
@@ -22,12 +23,12 @@ with lib; {
     clusterCidr = mkOption {
       description = "k3s CIDR prefix length";
       type = types.str;
-      default = "fd02::/56";
+      default = "10.0.0.0/16,fd02::/56";
     };
     serviceCidr = mkOption {
       description = "k3s service CIDR prefix length";
       type = types.str;
-      default = "fd01::/112";
+      default = "10.0.1.0/24,fd01::/112";
     };
     clusterDns = mkOption {
       description = "k3s DNS";
@@ -63,7 +64,7 @@ with lib; {
         "--flannel-ipv6-masq"
         "--cluster-cidr='${config.swarm.server.k3s.clusterCidr}'"
         "--service-cidr='${config.swarm.server.k3s.serviceCidr}'"
-        "--server=https://${config.swarm.server.k3s.clusterDns}:6443"
+        (mkIf (!config.swarm.server.k3s.clusterInit) "--server=https://${config.swarm.server.k3s.clusterDns}:6443")
         (concatStringsSep " " (concatMap (san: ["--tls-san" san]) config.swarm.server.k3s.san))
         "--tls-san=${config.swarm.server.k3s.clusterDns}"
       ];
@@ -80,6 +81,23 @@ with lib; {
       };
     };
 
+  systemd.services.user-kubeconfig = {
+    description = "Copy kubeconfig to user home";
+    after = [ "k3s.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      User = "root";
+      Group = "root";
+    };
+    script = ''
+      ${pkgs.uutils-coreutils}/bin/uutils-mkdir -p /home/${swarm.user}/.kube
+      rm -f /home/${swarm.user}/.kube/config 
+      ln -s /etc/rancher/k3s/k3s.yaml /home/${swarm.user}/.kube/config
+      chown ${swarm.user} /home/${swarm.user}/.kube/config
+    '';
+    wantedBy = [ "multi-user.target" ]; # Enable the service
+  };
+
     swarm.hardware.networking.firewall = {
       localTcpPorts.k3s = [
         6443
@@ -95,9 +113,7 @@ with lib; {
         51821
       ];
 
-      extraLocalCidrs = [
-        "${config.swarm.server.k3s.clusterCidr}"
-      ];
+      extraLocalCidrs = strings.splitString "," (config.swarm.server.k3s.clusterCidr);
     };
 
     fileSystems."/var/lib/rancher/k3s" = {
