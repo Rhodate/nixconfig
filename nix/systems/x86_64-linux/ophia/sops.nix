@@ -4,7 +4,7 @@
   ...
 }:
 with lib; {
-  sops.age.keyFile = swarm.ophia.keyFile;
+  sops.age.keyFile = "/nix/secrets/sops/age/keys.txt";
   sops.secrets.syncthing-cert = {
     sopsFile = snowfall.fs.get-file "secrets/syncthing/cert.pem";
     format = "binary";

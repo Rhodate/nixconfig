@@ -10,7 +10,7 @@ with lib; {
     flakePath = mkOption {
       type = types.path;
       description = "Path to the nixos flake";
-      default = lib.swarm.flakePath;
+      default = "";
     };
   };
 
@@ -18,6 +18,13 @@ with lib; {
     cfg = config.swarm.management;
   in
     mkIf cfg.enable {
+      assertions = [
+        {
+          assertion = cfg.flakePath != "";
+          message = "flakePath is required";
+        }
+      ];
+
       environment.systemPackages = with pkgs; [
         nix-output-monitor
         swarm.sw

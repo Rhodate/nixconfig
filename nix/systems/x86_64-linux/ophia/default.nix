@@ -38,7 +38,7 @@ with lib; {
     };
     management = {
       enable = true;
-      flakePath = swarm.ophia.flakePath;
+      flakePath = "/home/${swarm.user}/swarm.flake";
       sw.enable = true;
     };
     grub.enable = true;

@@ -55,7 +55,7 @@ in {
     networking.nftables.enable = true;
     networking.nftables.tables = {};
 
-    boot.kernelModules = [ "xt_MASQUERADE" ];
+    boot.kernelModules = ["xt_MASQUERADE"];
 
     systemd.services.dynamic-default-firewall = {
       description = "Dynamic default nftables firewall";
