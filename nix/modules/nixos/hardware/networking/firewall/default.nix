@@ -123,11 +123,9 @@ in {
 
         ${
           let
-            sshPort = toString (config.services.openssh.port or 22);
+            sshPort = toString (builtins.elemAt config.services.openssh.ports 0);
           in
-            if config.swarm.ssh.enable
-            then ''echo "    tcp dport ${sshPort} accept" >> "$ruleset"''
-            else ''echo "    tcp dport ${sshPort} reject" >> "$ruleset"''
+            if config.swarm.ssh.enable then ''echo "    tcp dport ${sshPort} accept" >> "$ruleset"'' else ""
         }
 
         # Extra user-defined accept rules

@@ -75,7 +75,7 @@ in {
         WORDCHARS = "\${WORDCHARS//\/}";
       };
       shellAliases = {
-        kssh = "kitty +kitty ssh";
+        ssh = "kitty +kitten ssh";
         ls = "ls --color=auto";
         dcmd = "nix develop --command";
       };

@@ -21,6 +21,10 @@ creation_rules:
       - age:
         - *admin_rhodate
         - *server_chito
+  - path_regex: secrets/git/[^/]+$
+    key_groups:
+      - age:
+        - *admin_rhodate
   - path_regex: secrets/recovery/[^/]+$
     key_groups:
       - age:
