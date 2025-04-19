@@ -32,8 +32,7 @@
     };
 
     lix-module = {
-      url = "https://git.lix.systems/lix-project/nixos-module/archive/release-2.92.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgs";
+      url = "https://git.lix.systems/lix-project/nixos-module/archive/main.tar.gz";
     };
 
     rust-overlay = {
@@ -61,9 +60,7 @@
 
     prismlauncher = {
       url = "github:PrismLauncher/PrismLauncher";
-
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-compat.follows = "";
     };
 
     zsh-completions = {

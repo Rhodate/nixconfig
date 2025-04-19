@@ -29,7 +29,6 @@ with lib; {
     };
     audio.enable = true;
     fs.type = "zfs";
-    signal.enable = true;
     gaming.steam.enable = true;
     syncthing = {
       enable = true;
