@@ -5,8 +5,12 @@
       dunst.enable = true;
       waybar.enable = true;
       swww = {
-        enable = false;
-        defaultWallpaper = ./wallpapers/alexander-streng-ezgif-com-optimize.gif;
+        enable = true;
+        defaultWallpaper = ./wallpapers/glt-12.jpg;
+        randomise = {
+          enable = true;
+          wallpaperFolder = ./wallpapers;
+        };
       };
       kitty.enable = true;
     };
@@ -30,6 +34,7 @@
 
   home.packages = with pkgs; [
     k9s
+    tea
     whois
     kubectl
     cryptsetup
@@ -95,13 +100,13 @@
   ];
 
   wayland.windowManager.hyprland.settings.exec-once = [
-    "hyprctl setcursor Bibata-Modern-Ice 22"
-    "kitty"
-    "[workspace 2 silent] firefox"
-    "[workspace 3 silent] discord"
-    "[workspace 4 silent] spotify"
-    "[workspace 5 silent] steam"
-    "[workspace special silent] signal-desktop"
+    "${pkgs.uwsm}/bin/uwsm app -- hyprctl setcursor Bibata-Modern-Ice 22"
+    "${pkgs.uwsm}/bin/uwsm app -- kitty"
+    "[workspace 2 silent] ${pkgs.uwsm}/bin/uwsm app -- firefox"
+    "[workspace 3 silent] ${pkgs.uwsm}/bin/uwsm app -- discord"
+    "[workspace 4 silent] ${pkgs.uwsm}/bin/uwsm app -- spotify"
+    "[workspace 5 silent] ${pkgs.uwsm}/bin/uwsm app -- steam"
+    "[workspace special silent] ${pkgs.uwsm}/bin/uwsm app -- signal-desktop"
   ];
 
   home.stateVersion = "24.11";

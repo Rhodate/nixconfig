@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 with lib; {
@@ -17,6 +18,10 @@ with lib; {
       source = ./config;
       recursive = true;
     };
+
+    home.packages = with pkgs; [
+      imagemagick
+    ];
 
     programs.neovim = {
       enable = true;

@@ -13,16 +13,14 @@ with lib; {
     };
   };
 
-  config = mkMerge [
-    (mkIf config.swarm.console.enable {
-      console = {
-        packages = [
-          pkgs.terminus_font
-          pkgs.powerline-fonts
-        ];
-        font = "ter-powerline-v16b";
-        useXkbConfig = true; # use xkb.options in tty.
-      };
-    })
-  ];
+  config = mkIf config.swarm.console.enable {
+    console = {
+      packages = [
+        pkgs.terminus_font
+        pkgs.powerline-fonts
+      ];
+      font = "ter-powerline-v16b";
+      useXkbConfig = true; # use xkb.options in tty.
+    };
+  };
 }

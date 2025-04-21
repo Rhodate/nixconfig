@@ -9,5 +9,6 @@ with lib;
     packages = with pkgs; [
       sops
       opentofu
+      swarm.swww-randomise
     ];
   }

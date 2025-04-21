@@ -91,9 +91,10 @@ with lib; {
       };
       script = ''
         ${pkgs.uutils-coreutils}/bin/uutils-mkdir -p /home/${swarm.user}/.kube
+        chown ${swarm.user}:${config.users.users.${swarm.user}.group} /home/${swarm.user}/.kube
         rm -f /home/${swarm.user}/.kube/config
         ln -s /etc/rancher/k3s/k3s.yaml /home/${swarm.user}/.kube/config
-        chown ${swarm.user} /home/${swarm.user}/.kube/config
+        chown ${swarm.user}:${config.users.users.${swarm.user}.group} /home/${swarm.user}/.kube/config
       '';
       wantedBy = ["multi-user.target"]; # Enable the service
     };

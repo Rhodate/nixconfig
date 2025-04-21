@@ -152,7 +152,6 @@ in {
       };
       groups.route53-dyndns = {};
     };
-
     systemd.services.route53-dyndns = {
       name = "route53-dyndns.service";
       description = "Maintains Route53 weighted records";
@@ -161,7 +160,7 @@ in {
       wantedBy = ["multi-user.target"];
       unitConfig = {
         StartLimitBurst = 10;
-        StartLimitIntervalSec = 900;
+        StartLimitInterval = 900;
       };
       serviceConfig = {
         Type = "notify";
@@ -276,10 +275,10 @@ in {
     systemd.paths.route53-dyndns = {
       description = "Refresh route53-dyndns on IP address change";
       pathConfig = {
-        PathChanged = "/proc/net/if_inet6";
-        PathChanged_2 = "/proc/net/fib_trie";
-      };
-      unitConfig = {
+        PathChanged = [
+          "/proc/net/if_inet6"
+          "/proc/net/fib_trie"
+        ];
         Unit = "route53-dyndns.service";
       };
       wantedBy = ["multi-user.target"];

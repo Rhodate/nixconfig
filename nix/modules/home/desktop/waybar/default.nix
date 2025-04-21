@@ -22,7 +22,7 @@ with lib; {
       services.playerctld.enable = true;
 
       # Set up waybar to start when hyprland starts (would be easy to make this support other desktop environments and themes
-      wayland.windowManager.hyprland.settings.exec-once = ["waybar"];
+      wayland.windowManager.hyprland.settings.exec-once = ["${pkgs.uwsm}/bin/uwsm app -- ${pkgs.waybar}/bin/waybar"];
 
       programs.waybar = {
         enable = true;

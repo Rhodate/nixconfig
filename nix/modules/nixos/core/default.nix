@@ -73,7 +73,7 @@ with lib; {
           ];
 
           trusted-users = ["@wheel"];
-          
+
           auto-optimise-store = true;
         };
         gc = {

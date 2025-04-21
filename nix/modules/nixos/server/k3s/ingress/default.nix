@@ -1,6 +1,4 @@
-{
-  ...
-}: {
+{...}: {
   services.k3s.manifests.traefik-config.content = {
     apiVersion = "helm.cattle.io/v1";
     kind = "HelmChartConfig";

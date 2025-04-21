@@ -40,6 +40,7 @@ with lib; {
       flakePath = "/home/${swarm.user}/swarm.flake";
       sw.enable = true;
     };
+    desktop.hyprland.enable = true;
     grub.enable = true;
     server = {
       k3s = {

@@ -125,7 +125,9 @@ in {
           let
             sshPort = toString (builtins.elemAt config.services.openssh.ports 0);
           in
-            if config.swarm.ssh.enable then ''echo "    tcp dport ${sshPort} accept" >> "$ruleset"'' else ""
+            if config.swarm.ssh.enable
+            then ''echo "    tcp dport ${sshPort} accept" >> "$ruleset"''
+            else ""
         }
 
         # Extra user-defined accept rules
@@ -160,10 +162,10 @@ in {
     systemd.paths.dynamic-default-firewall-refresh = {
       description = "Refresh dynamic default firewall on IP address change";
       pathConfig = {
-        PathChanged = "/proc/net/if_inet6";
-        PathChanged_2 = "/proc/net/fib_trie";
-      };
-      unitConfig = {
+        PathChanged = [
+          "/proc/net/if_inet6"
+          "/proc/net/fib_trie"
+        ];
         Unit = "dynamic-default-firewall.service";
       };
       wantedBy = ["multi-user.target"];

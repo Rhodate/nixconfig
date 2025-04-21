@@ -62,8 +62,6 @@ with lib; {
           allow_remote_control = "yes";
           listen_on = "unix:/tmp/mykitty";
 
-          dynamic_background_opacity = "yes";
-
           editor = "nvim";
 
           font_family = "Fira Code";

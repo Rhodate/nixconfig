@@ -3,6 +3,7 @@
   lib,
   inputs,
   system,
+  pkgs,
   ...
 }:
 with lib; {
@@ -34,7 +35,8 @@ with lib; {
           wayland.windowManager.hyprland = {
             settings = {
               exec-once = [
-                ''swww-daemon && swww img ${cfg.defaultWallpaper} --resize fit''
+                "${pkgs.uwsm}/bin/uwsm-app -- ${inputs.swww.packages.${system}.swww}/bin/swww-daemon"
+                (mkIf (cfg.defaultWallpaper != "") "${inputs.swww.packages.${system}.swww}/bin/swww img --transition-type none --transition-step 2 --transition-fps 144 --transition-duration 0 ${cfg.defaultWallpaper}")
               ];
             };
           };

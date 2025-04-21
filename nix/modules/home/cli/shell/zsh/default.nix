@@ -82,6 +82,8 @@ in {
       initExtraFirst = ''
         function source_if_exists { [[ -r $1 ]] && source $1 }
         # Start up p10k instant prompt so we don't feel the shell startup lag and can start typing instantly
+        # Quiet since direnv may output during the instant prompt
+        typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
         source_if_exists ''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-''${USERNAME}.zsh
 
         setopt magicequalsubst
@@ -112,13 +114,9 @@ in {
         export HOMEBREW_NO_ANALYTICS=1
         export PATH=$PATH:$DOTNET_ROOT:$DOTNET_ROOT/tools:~/code/kitty/kitty/launcher:~/.local/bin:./.fnm
       '';
-
-      # If we're using hyprland, make the first tty autostart on login
       profileExtra = mkIf config.swarm.desktop.hyprland.enable ''
-        [[ -f ~/.zshrc ]] && . ~/.zshrc
-
-        if [[ -z $DISPLAY ]] && [[ $(tty) == "/dev/tty1" ]]; then
-          exec Hyprland
+        if uwsm check may-start && uwsm select; then
+          exec uwsm start default
         fi
       '';
     };
