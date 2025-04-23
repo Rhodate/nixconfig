@@ -4,25 +4,18 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     master.url = "github:nixos/nixpkgs";
 
-    home-manager.url = "github:nix-community/home-manager/master";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    nixos-generators = {
+      url = "github:nix-community/nixos-generators";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    nix-darwin.url = "github:LnL7/nix-darwin";
-    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager = {
+      url = "github:nix-community/home-manager/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    # The name "snowfall-lib" is required due to how Snowfall Lib processes your flake's inputs.
     snowfall-lib = {
       url = "github:snowfallorg/lib";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    rhovim = {
-      url = "git+ssh://git@github.com/Rhodate/rhovim";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    snowfall-flake = {
-      url = "github:snowfallorg/flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -58,11 +51,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    prismlauncher = {
-      url = "github:PrismLauncher/PrismLauncher";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     zsh-completions = {
       url = "github:zsh-users/zsh-completions";
       flake = false;
@@ -88,7 +76,6 @@
       flake = false;
     };
 
-    kubenix.url = "github:hall/kubenix";
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -120,10 +107,8 @@
       ];
 
       overlays = with inputs; [
-        snowfall-flake.overlays.default
         rust-overlay.overlays.default
         lix-module.overlays.default
-        prismlauncher.overlays.default
       ];
 
       alias = {

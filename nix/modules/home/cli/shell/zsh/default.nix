@@ -8,6 +8,7 @@ with lib; let
   cfg = config.swarm.cli;
 in {
   config = mkIf (cfg.shell == "zsh") {
+    home.shell.enableZshIntegration = true;
     programs.zsh = {
       enable = true;
       autocd = true;

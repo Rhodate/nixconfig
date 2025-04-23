@@ -8,7 +8,7 @@ with lib; let
   ifPresent = with builtins;
     groups: filter (G: hasAttr G config.users.groups) groups;
 in {
-  config = {
+  config = mkIf config.swarm.users.enable {
     users.users.${swarm.user}.extraGroups =
       [
         "wheel"

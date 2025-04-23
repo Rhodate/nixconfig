@@ -23,12 +23,12 @@ with lib; {
     clusterCidr = mkOption {
       description = "k3s CIDR prefix length";
       type = types.str;
-      default = "10.0.0.0/16,fd02::/56";
+      default = "fd02::/56";
     };
     serviceCidr = mkOption {
       description = "k3s service CIDR prefix length";
       type = types.str;
-      default = "10.0.1.0/24,fd01::/112";
+      default = "fd01::/112";
     };
     clusterDns = mkOption {
       description = "k3s DNS";
@@ -66,12 +66,14 @@ with lib; {
         "--service-cidr='${config.swarm.server.k3s.serviceCidr}'"
         (mkIf (!config.swarm.server.k3s.clusterInit) "--server=https://${config.swarm.server.k3s.clusterDns}:6443")
         (concatStringsSep " " (concatMap (san: ["--tls-san" san]) config.swarm.server.k3s.san))
+        "--kube-apiserver-arg=\"admission-control-config-file=${./psa.yaml}\""
+        "--secrets-encryption"
         "--tls-san=${config.swarm.server.k3s.clusterDns}"
       ];
       tokenFile = config.sops.secrets.k3s-token.path;
       clusterInit = config.swarm.server.k3s.clusterInit;
-      manifests."tfstate-namespace" = {
-        content = {
+      manifests = {
+        tfstate-namespace.content = {
           apiVersion = "v1";
           kind = "Namespace";
           metadata = {
@@ -115,6 +117,13 @@ with lib; {
       ];
 
       extraLocalCidrs = strings.splitString "," (config.swarm.server.k3s.clusterCidr);
+    };
+
+    boot.kernel.sysctl = {
+      "vm.panic_on_oom" = "0";
+      "vm.overcommit_memory" = "1";
+      "kernel.panic" = "10";
+      "kernel.panic_on_oops" = "1";
     };
 
     fileSystems."/var/lib/rancher/k3s" = {

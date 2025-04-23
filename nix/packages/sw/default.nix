@@ -105,7 +105,10 @@ with lib;
             "
           else
             # Build only the current host
-            sudo nixos-rebuild switch --fast --flake .\#$(hostname) -L --cores $cores --show-trace |& ${pkgs.nix-output-monitor}/bin/nom
+            host=$(hostname)
+            # Do it separately from switching, so that I can see the changes before typing my password.
+            ${pkgs.nix-output-monitor}/bin/nom build .\#nixosConfigurations.''${host}.config.system.build.toplevel $buildArgs --print-out-paths -j $cores
+            sudo nixos-rebuild switch --fast --flake .\#''${host} -L --cores $cores --show-trace
           fi
         fi
   ''

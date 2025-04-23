@@ -14,8 +14,11 @@ with lib; {
 
   config = mkIf config.swarm.core.enable {
     programs = {
-      home-manager.enable = mkForce true; # Home-manager absolutely should stay enabled.
-      nix-index.enable = true; # A files database for Nixpkgs.
+      home-manager.enable = mkForce true;
+
+      # Use nix-index for command not found.
+      command-not-found.enable = false;
+      nix-index.enable = true;
     };
 
     home = {
