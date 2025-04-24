@@ -14,7 +14,10 @@ with lib; {
     hardware = {
       nvidia.enable = false;
       amdgpu.enable = true;
-      networking = swarm.networking.ophia;
+      networking = {
+        hostId = "36aa1853";
+        networkDevice = "enp14s0";
+      };
       input-remapper.enable = true;
     };
     virtualization = {

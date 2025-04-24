@@ -20,6 +20,7 @@
     fonts.enable = true;
     cli = {
       shell = "zsh";
+      ssh.enable = true;
       nvim.enable = true;
       zoxide.enable = true;
       direnv.enable = true;

@@ -6,18 +6,9 @@
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ./sops.nix
-    ./templates/certs.nix
   ];
 
   swarm = {
-    hardware = {
-      nvidia.enable = true;
-
-      networking = {
-        hostId = "d86dc3dc";
-        networkDevice = "enp5s0";
-      };
-    };
     virtualization = {
       enable = true;
       implementation = "docker";
@@ -29,7 +20,7 @@
       k3s = {
         enable = true;
         zfsStorageDisks = [
-          "/dev/zvol/zroot/mayastor"
+          "/dev/zvol/rpool/mayastor"
         ];
       };
       services.route53-dyndns = {
@@ -42,12 +33,6 @@
           k8s = {};
         };
       };
-      acme = {
-        enable = true;
-        awsCredentialsFile = config.sops.secrets.route53-acme-credentials.path;
-        hostedZoneId = "Z004213625PGR7UVYSB0C";
-        awsRegion = "ca-central-1";
-      };
     };
   };
 
@@ -55,29 +40,6 @@
 
   environment.enableAllTerminfo = true;
 
-  # TODO(rhoddy): This just doesn't fucking work. It doesn't persist either, even with /.keep_sshd. I don't know why.
-  # Maybe a tmpfs issue? Or a kernel module issue? I don't know.
-  # boot = {
-  #   kernelParams = [
-  #     "ip=dhcp"
-  #   ];
-  #   initrd = {
-  #     availableKernelModules = ["igb" "nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod"];
-  #     network = {
-  #       enable = true;
-  #       ssh = {
-  #         enable = true;
-  #         port = 23;
-  #         authorizedKeys = swarm.publicKeys;
-  #         hostKeys = ["/etc/secrets/initrd/ssh_host_rsa_key"];
-  #         shell = "/bin/cryptsetup-askpass";
-  #       };
-  #     };
-  #     preDeviceCommands = ''
-  #       touch /.keep_sshd
-  #     '';
-  #   };
-  # };
   boot = {
     kernelModules = ["kvm-amd"];
   };
@@ -89,18 +51,13 @@
   };
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/C93D-E931";
+    device = "/dev/disk/by-partlabel/esp";
     fsType = "vfat";
     options = ["fmask=0077" "dmask=0077"];
   };
 
   fileSystems."/nix" = {
-    device = "zroot/root/nix";
-    fsType = "zfs";
-  };
-
-  fileSystems."/home" = {
-    device = "zroot/root/home";
+    device = "rpool/nix";
     fsType = "zfs";
   };
 
