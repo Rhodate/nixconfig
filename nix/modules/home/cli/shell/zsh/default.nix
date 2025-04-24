@@ -104,7 +104,7 @@ in {
         bindkey -M vicmd 'k' history-substring-search-up
         bindkey -M vicmd 'j' history-substring-search-down
 
-        source_if_exists ~/.p10k.zsh
+        source ${./.p10k.zsh}
       '';
 
       envExtra = ''

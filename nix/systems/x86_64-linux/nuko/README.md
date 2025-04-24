@@ -2,17 +2,18 @@
 
 ```zsh
 
-# partition disks first, and create boot partition fs
+ssh root@ip
+
+# partition disks first, and create boot partition fs. Elided cause fuck you
 
 BOOT_PART=/dev/whatever
 ZFS_PART=/dev/whatever
 
 # Set up zfs for nix and mayastor
 
-zpool create -o ashift=12 -o autotrim=on -R $ZFS_PART -O acltype=posixacl -O canmount=off -O dnodesize=auto -O normalization=formD -O relatime=on -O xattr=sa -O mountpoint=none rpool
+zpool create -o ashift=12 -o autotrim=on -R /mnt -O encryption=on -O keyformat=passphrase -O acltype=posixacl -O canmount=off -O dnodesize=auto -O normalization=formD -O relatime=on -O xattr=sa -O mountpoint=none rpool $ZFS_PART
 
 zfs create rpool/nix -o canmount=noauto -o mountpoint=legacy
-
 zfs create rpool/mayastor -V 350G
 
 # Create directory structure and mount up filesystems
@@ -46,7 +47,15 @@ cp -r /mnt/etc/ssh /mnt/nix/persist/etc/secrets/ssh
 # Get the age public key for sops. This should be added to `.sops.yaml`, committed, and pushed to the remote repo
 cat /mnt/etc/secrets/ssh/ssh_host_ed25519_key.pub | ssh-to-age
 
-# Once the system is configured in this repo. Be sure to replace the hostname
-nixos-install --root /mnt/ --flake https://github.com/Rhodate/nixconfig/archive/master.tar.gz#nuko
+```
+
+Create the machine config then build and push to the machine like so:
+
+```zsh
+
+nix build .\#nixosConfigurations.hostname.config.system.build.toplevel --show-trace |& nom
+nix-copy-closure --to root@ip ./result
+ssh root@ip
+nixos-install --no-root-password --root /mnt --system
 
 ```
