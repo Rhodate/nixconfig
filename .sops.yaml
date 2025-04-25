@@ -2,6 +2,8 @@ keys:
   - &admin_rhodate age1ujlyknmj9w8urr4cqsxry09scrtcx2auj7n057mvtaa835f2m3tspy5ryu
   - &server_chito age1c6p58sg90tu0x90ku3xzegfncyvm0wq73ftta0eday6vy7alkajsw975cg
   - &server_nuko-1 age1sf6gfhtglf8ard7c9z4ucv45czg6slhymk8k06khgxarkx0nz32slaptrw
+  - &server_nuko-2 age1hp2dqw26ehjlzsjdjr5k78llelxs7aqrn2f6uk9kxqnt4q4cecysvheyc6
+  - &server_nuko-3 age13xpl6c45tdp4reh7uz585lng06s3njadtl8n2c84mwwcz6pegg6s96dddh
   - &admin_recovery age17ac9wcw3mrfp0d5f823rhfx7hgp6dt9xp36ylfk3sm5j4th3gqssfyaaer
 creation_rules:
   - path_regex: secrets/common/[^/]+$
@@ -10,6 +12,8 @@ creation_rules:
         - *admin_rhodate
         - *server_chito
         - *server_nuko-1
+        - *server_nuko-2
+        - *server_nuko-3
   - path_regex: secrets/management/[^/]+$
     key_groups:
       - age:
@@ -24,6 +28,8 @@ creation_rules:
         - *admin_rhodate
         - *server_chito
         - *server_nuko-1
+        - *server_nuko-2
+        - *server_nuko-3
   - path_regex: secrets/git/[^/]+$
     key_groups:
       - age:

@@ -13,7 +13,7 @@ in {
       extraFlags = mkAfter ["--node-label openebs.io/engine=mayastor"];
       manifests = listToAttrs (map (
           zfsStorageDisk: rec {
-            name = "diskpool-${replaceStrings ["/" "."] ["-" "-"] zfsStorageDisk}";
+            name = "diskpool-${config.networking.hostName}-${replaceStrings ["/" "."] ["-" "-"] zfsStorageDisk}";
             value = {
               content = {
                 apiVersion = "openebs.io/v1beta3";
@@ -39,10 +39,6 @@ in {
         targetNamespace = mayastor;
         createNamespace = true;
         values = {
-          etcd = {
-            affinity = {};
-            replicaCount = 2;
-          };
           obs.callhome.enabled = false;
           eventing.enabled = false;
         };
