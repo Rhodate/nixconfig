@@ -13,6 +13,7 @@
       enable = true;
       implementation = "docker";
     };
+    hardware.networking.enableIpv6Privacy = false;
     systemdboot.enable = true;
     fs.type = "zfs";
     ssh.enable = true;
@@ -23,6 +24,7 @@
           "/dev/zvol/rpool/mayastor"
         ];
       };
+      services.ip-watcher.enable = true;
       services.route53-dyndns = {
         enable = true;
 

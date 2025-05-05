@@ -5,6 +5,7 @@
       nvim.enable = true;
       zoxide.enable = true;
       btop.enable = true;
+      ssh.enable = true;
     };
   };
 

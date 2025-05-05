@@ -53,6 +53,7 @@ with lib; {
           "/dev/disk/by-id/nvme-eui.0025385c2140361b"
         ];
       };
+      services.ip-watcher.enable = true;
       services.route53-dyndns = {
         enable = true;
         hostedZoneId = "Z004213625PGR7UVYSB0C";

@@ -24,6 +24,11 @@ with lib; {
       type = str;
       default = "fe80::/64";
     };
+    enableIpv6Privacy = mkOption {
+      description = "Enable random ipv6 privacy addresses";
+      type = bool;
+      default = true;
+    };
   };
 
   config = let
@@ -31,9 +36,9 @@ with lib; {
   in
     mkIf cfg.enable {
       networking = {
-        useDHCP = lib.mkDefault true;
         hostId = cfg.hostId;
         enableIPv6 = true;
+        interfaces.${cfg.networkDevice}.tempAddress = if cfg.enableIpv6Privacy then "default" else "disabled";
       };
 
       boot.kernel.sysctl."net.ipv6.conf.all.forwarding" = "1";

@@ -52,7 +52,7 @@ in {
       };
     };
 
-    # Required system packages for Longhorn
+    # Required system packages for mayastor
     environment.systemPackages = with pkgs; [
       zfs
     ];

@@ -16,6 +16,7 @@
       networking = {
         hostId = "d86dc3dc";
         networkDevice = "enp5s0";
+        enableIpv6Privacy = false;
       };
     };
     virtualization = {
@@ -32,9 +33,9 @@
           "/dev/zvol/zroot/mayastor"
         ];
       };
+      services.ip-watcher.enable = true;
       services.route53-dyndns = {
         enable = true;
-
         hostedZoneId = "Z004213625PGR7UVYSB0C";
         awsCredentialsFile = config.sops.secrets.route53-dyndns-credentials.path;
         records = {

@@ -85,6 +85,7 @@ with lib; {
     systemd.services.user-kubeconfig = {
       description = "Copy kubeconfig to user home";
       after = ["k3s.service"];
+      wants = ["k3s.service"];
       serviceConfig = {
         Type = "oneshot";
         User = "root";
@@ -94,11 +95,13 @@ with lib; {
         mkdir -p /home/${swarm.user}/.kube
         chown ${swarm.user}:${config.users.users.${swarm.user}.group} /home/${swarm.user}/.kube
         rm -f /home/${swarm.user}/.kube/config
-        ln -s /etc/rancher/k3s/k3s.yaml /home/${swarm.user}/.kube/config
+        cp /etc/rancher/k3s/k3s.yaml /home/${swarm.user}/.kube/config
         chown ${swarm.user}:${config.users.users.${swarm.user}.group} /home/${swarm.user}/.kube/config
       '';
-      wantedBy = ["multi-user.target"]; # Enable the service
+      wantedBy = ["multi-user.target"];
     };
+
+    swarm.server.services.ip-watcher.dependents = [ "k3s.service" ];
 
     swarm.hardware.networking.firewall = {
       localTcpPorts.k3s = [

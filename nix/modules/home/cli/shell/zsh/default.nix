@@ -76,7 +76,6 @@ in {
         WORDCHARS = "\${WORDCHARS//\/}";
       };
       shellAliases = {
-        ssh = "kitty +kitten ssh";
         ls = "ls --color=auto";
         dcmd = "nix develop --command";
       };
@@ -103,6 +102,10 @@ in {
 
         bindkey -M vicmd 'k' history-substring-search-up
         bindkey -M vicmd 'j' history-substring-search-down
+
+        if ! test -v NVIM; then
+          alias ssh='kitty +kitten ssh'
+        fi
 
         source ${./.p10k.zsh}
       '';
