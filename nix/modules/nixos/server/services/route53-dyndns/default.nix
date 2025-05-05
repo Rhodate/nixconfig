@@ -108,18 +108,6 @@ in {
       default = 300;
       description = "TTL for the record.";
     };
-
-    pollingPeriod = mkOption {
-      type = types.int;
-      default = 5;
-      description = "Polling period in seconds.";
-    };
-
-    retryBackoffMax = mkOption {
-      type = types.int;
-      default = 300;
-      description = "Maximum backoff time in seconds for retries.";
-    };
   };
 
   config = mkIf cfg.enable {
@@ -142,7 +130,6 @@ in {
       }
     ];
 
-    # set up user for service, it should be configured as a generic systemd user
     users = {
       users.route53-dyndns = {
         name = cfg.serviceUserName;
@@ -163,12 +150,10 @@ in {
         StartLimitInterval = 900;
       };
       serviceConfig = {
-        Type = "notify";
+        Type = "oneshot";
+        RemainAfterExit = "yes";
         User = "route53-dyndns";
-        Restart = "always";
-        RestartSec = 90;
-        NotifyAccess = "all";
-        TimeoutStartSec = 60;
+        Restart = "on-failure";
       };
       script = with pkgs; ''
         set -euo pipefail
@@ -181,107 +166,64 @@ in {
         trap 'log "Service stopping"; exit 0' TERM INT
 
         IPV6_ADDRESS=
-        RETRY_BACKOFF=5
-
-        log "Initializing Route53 dynamic DNS"
-        systemd-notify STATUS="Initializing Route53 dynamic DNS"
         export AWS_CONFIG_FILE="${cfg.awsCredentialsFile}"
 
-        while true; do
-          # Get global unicast IPv6 address (not link-local)
-          NEW_IPV6_ADDRESS=$(${iproute2}/sbin/ip -6 addr show dev "${networkDevice}" |
-                            ${gnugrep}/bin/grep -v 'scope link' |
-                            ${gnugrep}/bin/grep 'scope global' |
-                            ${gawk}/bin/awk '{print $2}' |
-                            ${uutils-coreutils}/bin/uutils-cut -d/ -f1 |
-                            head -n 1)
+        # Get global unicast IPv6 address (not link-local)
+        NEW_IPV6_ADDRESS=$(${iproute2}/sbin/ip -6 addr show dev "${networkDevice}" |
+                          ${gnugrep}/bin/grep -v 'scope link' |
+                          ${gnugrep}/bin/grep 'scope global' |
+                          ${gawk}/bin/awk '{print $2}' |
+                          ${uutils-coreutils}/bin/uutils-cut -d/ -f1 |
+                          head -n 1)
 
-          if [ -z "$NEW_IPV6_ADDRESS" ]; then
-            log "Error: No global IPv6 address found on device ${networkDevice}"
-            systemd-notify STATUS="Waiting for IPv6 address..."
-            sleep ${toString cfg.pollingPeriod}
-            continue
-          fi
+        if [ -z "$NEW_IPV6_ADDRESS" ]; then
+          log "Error: No global IPv6 address found on device ${networkDevice}"
+          exit 1
+        fi
 
-          if [ "$IPV6_ADDRESS" = "$NEW_IPV6_ADDRESS" ]; then
-            sleep ${toString cfg.pollingPeriod}
-            continue
-          fi
+        log "Updating Route53 records to $NEW_IPV6_ADDRESS"
 
-          log "Detected IP change from $IPV6_ADDRESS to $NEW_IPV6_ADDRESS"
-          systemd-notify STATUS="Updating Route53 records from $IPV6_ADDRESS to $NEW_IPV6_ADDRESS"
-
-          # Create the change batch JSON inline
-          CHANGE_BATCH='{
-            "Changes": [
-              ${concatStringsSep ",\n              " (mapAttrsToList (prefix: record: ''
-            {
-              "Action": "UPSERT",
-              "ResourceRecordSet": {
-                "Name": "${getFullRecordName prefix}",
-                "Type": "AAAA",
-                "TTL": ${toString cfg.ttl},
-                "SetIdentifier": "${record.identifier}",
-                "Weight": ${toString record.weight},
-                "ResourceRecords": [
-                  {
-                    "Value": "'"$NEW_IPV6_ADDRESS"'"
-                  }
-                ]
-              }
+        # Create the change batch JSON inline
+        CHANGE_BATCH='{
+          "Changes": [
+            ${concatStringsSep ",\n              " (mapAttrsToList (prefix: record: ''
+          {
+            "Action": "UPSERT",
+            "ResourceRecordSet": {
+              "Name": "${getFullRecordName prefix}",
+              "Type": "AAAA",
+              "TTL": ${toString cfg.ttl},
+              "SetIdentifier": "${record.identifier}",
+              "Weight": ${toString record.weight},
+              "ResourceRecords": [
+                {
+                  "Value": "'"$NEW_IPV6_ADDRESS"'"
+                }
+              ]
             }
-          '')
-          allRecords)}
-            ]
-          }'
+          }
+        '')
+        allRecords)}
+          ]
+        }'
 
-          # Update Route53 records
-          if ${awscli2}/bin/aws route53 change-resource-record-sets \
-              --cli-connect-timeout 15 \
-              --cli-read-timeout 15 \
-              --hosted-zone-id "${cfg.hostedZoneId}" \
-              --change-batch "$CHANGE_BATCH"; then
+        # Update Route53 records
+        if ${awscli2}/bin/aws route53 change-resource-record-sets \
+            --cli-connect-timeout 15 \
+            --cli-read-timeout 15 \
+            --hosted-zone-id "${cfg.hostedZoneId}" \
+            --change-batch "$CHANGE_BATCH"; then
 
-            log "Successfully updated Route53 records from $IPV6_ADDRESS to $NEW_IPV6_ADDRESS"
-            IPV6_ADDRESS="$NEW_IPV6_ADDRESS"
-            RETRY_BACKOFF=5  # Reset backoff on success
-            systemd-notify READY=1 STATUS="Monitoring for updates..."
-            systemd-notify BARRIER=1
-          else
-            RETRY_STATUS=$?
-            log "Error: Failed to update Route53 records. Command exited with status $RETRY_STATUS"
-
-            # Implement exponential backoff
-            log "Retrying in $RETRY_BACKOFF seconds..."
-            systemd-notify STATUS="Failed to update Route53 records. Retrying in $RETRY_BACKOFF seconds..."
-            systemd-notify BARRIER=1
-
-            sleep $RETRY_BACKOFF
-
-            # Double the backoff time for next failure, up to the maximum
-            RETRY_BACKOFF=$((RETRY_BACKOFF * 2))
-            if [ $RETRY_BACKOFF -gt ${toString cfg.retryBackoffMax} ]; then
-              RETRY_BACKOFF=${toString cfg.retryBackoffMax}
-            fi
-
-            continue
-          fi
-
-          sleep ${toString cfg.pollingPeriod}
-        done
+          log "Successfully updated Route53 records to $NEW_IPV6_ADDRESS"
+          exit 0
+        else
+          STATUS=$?
+          log "Error: Failed to update Route53 records. Command exited with status $STATUS"
+          exit $STATUS
+        fi
       '';
     };
 
-    systemd.paths.route53-dyndns = {
-      description = "Refresh route53-dyndns on IP address change";
-      pathConfig = {
-        PathChanged = [
-          "/proc/net/if_inet6"
-          "/proc/net/fib_trie"
-        ];
-        Unit = "route53-dyndns.service";
-      };
-      wantedBy = ["multi-user.target"];
-    };
+    swarm.server.services.ip-watcher.dependents = [ "route53-dyndns.service" ];
   };
 }
