@@ -171,7 +171,7 @@ with lib; {
           };
 
           decoration = {
-            rounding = 10;
+            rounding = 3;
             blur = {
               enabled = true;
               size = 3;

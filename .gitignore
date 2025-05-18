@@ -3,4 +3,4 @@ result/
 .terraform
 .terraform.lock.hcl
 linux/
-./result
+result
