@@ -17,6 +17,10 @@ with lib; {
       networking = {
         hostId = "36aa1853";
         networkDevice = "enp14s0";
+        wireguard = {
+          enable = true;
+          privateKeyFile = "/nix/secrets/wireguard.private";
+        };
       };
       input-remapper.enable = true;
     };
@@ -26,7 +30,7 @@ with lib; {
     };
     ai = {
       ollama = {
-        enable = true;
+        enable = false;
         rocmOverrideGfx = "11.0.0";
       };
     };
@@ -34,7 +38,7 @@ with lib; {
     fs.type = "zfs";
     gaming.steam.enable = true;
     syncthing = {
-      enable = true;
+      enable = false;
       keyFile = config.sops.secrets.syncthing-key.path;
       certFile = config.sops.secrets.syncthing-cert.path;
     };
@@ -48,12 +52,11 @@ with lib; {
     server = {
       k3s = {
         enable = true;
-        clusterInit = true;
+        clusterInit = false;
         zfsStorageDisks = [
           "/dev/disk/by-id/nvme-eui.0025385c2140361b"
         ];
       };
-      services.ip-watcher.enable = true;
       services.route53-dyndns = {
         enable = true;
         hostedZoneId = "Z004213625PGR7UVYSB0C";
@@ -64,7 +67,7 @@ with lib; {
         };
       };
       acme = {
-        enable = true;
+        enable = false;
         awsCredentialsFile = config.sops.secrets.route53-acme-credentials.path;
         hostedZoneId = "Z004213625PGR7UVYSB0C";
         awsRegion = "ca-central-1";

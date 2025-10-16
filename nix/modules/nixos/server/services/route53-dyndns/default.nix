@@ -139,21 +139,22 @@ in {
       };
       groups.route53-dyndns = {};
     };
+    systemd.timers.route53-dyndns = {
+      wantedBy = [ "timers.target" ];
+      timerConfig = {
+        OnBootSec = "5m";
+        OnUnitActiveSec = "5m";
+        Unit = config.systemd.services.route53-dyndns.name;
+      };
+    };
     systemd.services.route53-dyndns = {
       name = "route53-dyndns.service";
       description = "Maintains Route53 weighted records";
-      after = ["network-online.target" "dynamic-default-firewall.target"];
-      wants = ["network-online.target" "dynamic-default-firewall.target"];
-      wantedBy = ["multi-user.target"];
-      unitConfig = {
-        StartLimitBurst = 10;
-        StartLimitInterval = 900;
-      };
+      after = ["network-online.target"];
+      wants = ["network-online.target"];
       serviceConfig = {
         Type = "oneshot";
-        RemainAfterExit = "yes";
         User = "route53-dyndns";
-        Restart = "on-failure";
       };
       script = with pkgs; ''
         set -euo pipefail
@@ -165,7 +166,6 @@ in {
         # Setup trap for cleanup
         trap 'log "Service stopping"; exit 0' TERM INT
 
-        IPV6_ADDRESS=
         export AWS_CONFIG_FILE="${cfg.awsCredentialsFile}"
 
         # Get global unicast IPv6 address (not link-local)
@@ -223,7 +223,5 @@ in {
         fi
       '';
     };
-
-    swarm.server.services.ip-watcher.dependents = [ "route53-dyndns.service" ];
   };
 }

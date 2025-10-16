@@ -11,4 +11,3 @@ require('auto-session').setup {
   }
 }
 
-vim.keymap.set('n', '<leader>fse', require('auto-session.session-lens').search_session)

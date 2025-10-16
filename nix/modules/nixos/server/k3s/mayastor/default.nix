@@ -8,7 +8,6 @@ with lib; let
   mayastor = "mayastor";
 in {
   config = mkIf config.swarm.server.k3s.enable {
-    # Enable K3s service
     services.k3s = {
       extraFlags = mkAfter ["--node-label openebs.io/engine=mayastor"];
       manifests = listToAttrs (map (
@@ -21,6 +20,9 @@ in {
                 metadata = {
                   name = "${name}";
                   namespace = mayastor;
+                  labels = {
+                    randomValue = "jlfka-dfjas";
+                  };
                 };
                 spec = {
                   node = config.networking.hostName;
@@ -34,8 +36,8 @@ in {
       autoDeployCharts.mayastor = {
         repo = "https://openebs.github.io/mayastor-extensions";
         name = mayastor;
-        version = "0.0.0";
-        hash = "sha256-h/V2NLXgF9BfeHRe+H2P918Qe03PifBla3XlfpLwtso=";
+        version = "2.9.3";
+        hash = "sha256-VM3Fz3Nbrrdt/Bb9/K4rUOnEwKeqFvAj+QNX7dm9VWY=";
         targetNamespace = mayastor;
         createNamespace = true;
         values = {
@@ -45,17 +47,18 @@ in {
       };
     };
 
-    swarm.hardware.networking.firewall = {
-      localTcpPorts = {
-        Mayastor-GRPC = [10124];
-        Mayastor-NVMe-oF = [8420 4421];
-      };
-    };
-
     # Required system packages for mayastor
     environment.systemPackages = with pkgs; [
       zfs
     ];
+
+    networking.firewall.interfaces.wg0 = {
+      allowedTCPPorts = [ 
+        10124
+        8420
+        4421
+      ];
+    };
 
     # Ensure the needed kernel modules are loaded
     boot.supportedFilesystems = ["zfs"];

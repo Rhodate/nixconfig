@@ -16,7 +16,6 @@
       networking = {
         hostId = "d86dc3dc";
         networkDevice = "enp5s0";
-        enableIpv6Privacy = false;
       };
     };
     virtualization = {
@@ -28,12 +27,11 @@
     ssh.enable = true;
     server = {
       k3s = {
-        enable = true;
+        enable = false;
         zfsStorageDisks = [
           "/dev/zvol/zroot/mayastor"
         ];
       };
-      services.ip-watcher.enable = true;
       services.route53-dyndns = {
         enable = true;
         hostedZoneId = "Z004213625PGR7UVYSB0C";

@@ -11,33 +11,25 @@ with lib; {
       type = types.bool;
       default = false;
     };
-    san = mkOption {
-      description = "k3s SANs";
-      type = types.listOf (types.str);
-      default = [
-        "${config.networking.hostName}.${swarm.domainName}"
-        "${swarm.domainName}"
-      ];
-    };
-    clusterCidr = mkOption {
-      description = "k3s CIDR prefix length";
-      type = types.str;
-      default = "fd02::/56";
-    };
-    serviceCidr = mkOption {
-      description = "k3s service CIDR prefix length";
-      type = types.str;
-      default = "fd01::/112";
-    };
     clusterDns = mkOption {
       description = "k3s DNS";
       type = types.str;
-      default = "k8s.${swarm.domainName}";
+      default = config.swarm.hardware.networking.wireguard.hosts.nuko-2.ip;
     };
     zfsStorageDisks = mkOption {
       description = "path to k3s ZFS storage disks";
       type = types.listOf (types.str);
       default = [];
+    };
+    podCidr = mkOption {
+      description = "k3s pod cidr";
+      type = types.str;
+      default = "10.42.0.0/16";
+    };
+    serviceCidr = mkOption {
+      description = "k3s service cidr";
+      type = types.str;
+      default = "10.43.0.0/16";
     };
   };
   config = mkIf config.swarm.server.k3s.enable {
@@ -60,14 +52,14 @@ with lib; {
       role = "server";
       extraFlags = [
         "--disable metrics-server"
-        "--flannel-ipv6-masq"
-        "--cluster-cidr='${config.swarm.server.k3s.clusterCidr}'"
-        "--service-cidr='${config.swarm.server.k3s.serviceCidr}'"
+        "--flannel-backend=host-gw"
+        "--flannel-iface=wg0"
+        "--kubelet-arg=--pod-cidr=${config.swarm.hardware.networking.wireguard.hosts.${config.networking.hostName}.podCIDR}"
+        "--service-cidr=${config.swarm.server.k3s.serviceCidr}"
+        "--node-ip=${config.swarm.hardware.networking.wireguard.ip}"
         (mkIf (!config.swarm.server.k3s.clusterInit) "--server=https://${config.swarm.server.k3s.clusterDns}:6443")
-        (concatStringsSep " " (concatMap (san: ["--tls-san" san]) config.swarm.server.k3s.san))
         "--kube-apiserver-arg=\"admission-control-config-file=${./psa.yaml}\""
         "--secrets-encryption"
-        "--tls-san=${config.swarm.server.k3s.clusterDns}"
       ];
       tokenFile = config.sops.secrets.k3s-token.path;
       clusterInit = config.swarm.server.k3s.clusterInit;
@@ -80,6 +72,22 @@ with lib; {
           };
         };
       };
+    };
+
+    networking.firewall.interfaces.wg0 = {
+      allowedTCPPorts = [ 
+        6443
+        10250
+        443
+        5001
+        2379
+        2380
+      ];
+      allowedTCPPortRanges = [ { from = 0; to = 65535; } ];
+      allowedUDPPorts = [
+        8472
+        51821
+      ];
     };
 
     systemd.services.user-kubeconfig = {
@@ -99,26 +107,6 @@ with lib; {
         chown ${swarm.user}:${config.users.users.${swarm.user}.group} /home/${swarm.user}/.kube/config
       '';
       wantedBy = ["multi-user.target"];
-    };
-
-    swarm.server.services.ip-watcher.dependents = [ "k3s.service" ];
-
-    swarm.hardware.networking.firewall = {
-      localTcpPorts.k3s = [
-        6443
-        10250
-        443
-        5001
-        2379
-        2380
-      ];
-
-      localUdpPorts.k3s = [
-        8472
-        51821
-      ];
-
-      extraLocalCidrs = strings.splitString "," (config.swarm.server.k3s.clusterCidr);
     };
 
     boot.kernel.sysctl = {
