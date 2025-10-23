@@ -7,7 +7,7 @@
 with lib; let
   mayastor = "mayastor";
 in {
-  config = mkIf config.swarm.server.k3s.enable {
+  config = mkIf (config.swarm.server.k3s.enable && (length config.swarm.server.k3s.zfsStorageDisks) > 0) {
     services.k3s = {
       extraFlags = mkAfter ["--node-label openebs.io/engine=mayastor"];
       manifests = listToAttrs (map (

@@ -5,6 +5,7 @@ keys:
   - &server_nuko-2 age1hp2dqw26ehjlzsjdjr5k78llelxs7aqrn2f6uk9kxqnt4q4cecysvheyc6
   - &server_nuko-3 age13xpl6c45tdp4reh7uz585lng06s3njadtl8n2c84mwwcz6pegg6s96dddh
   - &admin_recovery age17ac9wcw3mrfp0d5f823rhfx7hgp6dt9xp36ylfk3sm5j4th3gqssfyaaer
+  - &aws_venus age17hdycjjgjdz70jfveep6x68ugl0nqavhh7u5zx4nax6r3q724v9qfvlgw6
 creation_rules:
   - path_regex: secrets/common/[^/]+$
     key_groups:
@@ -14,6 +15,7 @@ creation_rules:
         - *server_nuko-1
         - *server_nuko-2
         - *server_nuko-3
+        - *aws_venus
   - path_regex: secrets/management/[^/]+$
     key_groups:
       - age:

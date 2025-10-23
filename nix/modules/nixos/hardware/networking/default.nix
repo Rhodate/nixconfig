@@ -30,6 +30,7 @@ with lib; {
         nat.enable = true;
         nat.enableIPv6 = true;
         nat.externalInterface = cfg.networkDevice;
+        firewall.enable = true;
       };
     };
 }

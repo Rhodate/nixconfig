@@ -27,6 +27,8 @@ with lib; {
         };
         users.users.${swarm.user}.openssh.authorizedKeys.keys = swarm.publicKeys;
 
+      })
+      (mkIf (cfg.enable && (config.fileSystems."/".fsType == "tmpfs")) {
         # Use persistent SSH keys
         environment.etc."ssh/ssh_host_rsa_key".source = "/etc/secrets/ssh/ssh_host_rsa_key";
         environment.etc."ssh/ssh_host_rsa_key.pub".source = "/etc/secrets/ssh/ssh_host_rsa_key.pub";

@@ -19,7 +19,7 @@ def _draw_right_status(screen: Screen, is_last: bool) -> int:
 
     cells = [
         (CLOCK_BG, screen.cursor.bg, ""),
-        (CLOCK_FG, CLOCK_BG, datetime.datetime.now().strftime(" %H:%M:%S ")),
+        (CLOCK_FG, CLOCK_BG, datetime.datetime.now().strftime(" %H:%M:%S ")),
         (DATE_FG, DATE_BG, datetime.datetime.now().strftime("  %Y/%m/%d ")),
     ]
 

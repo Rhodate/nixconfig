@@ -106,7 +106,7 @@ with lib; {
             };
 
             clock = {
-              format = "   {:%H:%M}";
+              format = "   {:%H:%M}";
               format-alt = "󰃭  {:%Y-%m-%d}";
             };
 

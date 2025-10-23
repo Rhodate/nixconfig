@@ -79,8 +79,10 @@ with lib;
               exit 1
             fi
             system=$(readlink -f result)
+            echo "Copying closure to ''${host}"
             ${pkgs.nix}/bin/nix-copy-closure --to ${swarm.user}@''${host} --use-substitutes $system
 
+            echo "SSHing to ''${host} and switching to new configuration"
             ${pkgs.openssh}/bin/ssh -t ${swarm.user}@''${host} "
               # Register the new system profile
               sudo nix-env -p /nix/var/nix/profiles/system --set $system

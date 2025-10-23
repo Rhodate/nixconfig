@@ -16,6 +16,11 @@ with lib; {
       type = types.str;
       default = config.swarm.hardware.networking.wireguard.hosts.nuko-2.ip;
     };
+    role = mkOption {
+      description = "k3s role";
+      type = types.str;
+      default = "server";
+    };
     zfsStorageDisks = mkOption {
       description = "path to k3s ZFS storage disks";
       type = types.listOf (types.str);
@@ -49,17 +54,22 @@ with lib; {
 
     services.k3s = {
       enable = true;
-      role = "server";
-      extraFlags = [
-        "--disable metrics-server"
-        "--flannel-backend=host-gw"
-        "--flannel-iface=wg0"
-        "--kubelet-arg=--pod-cidr=${config.swarm.hardware.networking.wireguard.hosts.${config.networking.hostName}.podCIDR}"
-        "--service-cidr=${config.swarm.server.k3s.serviceCidr}"
-        "--node-ip=${config.swarm.hardware.networking.wireguard.ip}"
-        (mkIf (!config.swarm.server.k3s.clusterInit) "--server=https://${config.swarm.server.k3s.clusterDns}:6443")
-        "--kube-apiserver-arg=\"admission-control-config-file=${./psa.yaml}\""
-        "--secrets-encryption"
+      role = config.swarm.server.k3s.role;
+      extraFlags = mkMerge [
+        (mkIf (config.swarm.server.k3s.role == "server") [
+          "--disable metrics-server"
+          "--disable traefik"
+          "--flannel-backend=host-gw"
+          "--service-cidr=${config.swarm.server.k3s.serviceCidr}"
+          "--kube-apiserver-arg=\"admission-control-config-file=${./psa.yaml}\""
+          "--secrets-encryption"
+        ])
+        [
+          (mkIf (!config.swarm.server.k3s.clusterInit) "--server=https://${config.swarm.server.k3s.clusterDns}:6443")
+          "--flannel-iface=wg0"
+          "--kubelet-arg=--pod-cidr=${config.swarm.hardware.networking.wireguard.hosts.${config.networking.hostName}.podCIDR}"
+          "--node-ip=${config.swarm.hardware.networking.wireguard.ip}"
+        ]
       ];
       tokenFile = config.sops.secrets.k3s-token.path;
       clusterInit = config.swarm.server.k3s.clusterInit;

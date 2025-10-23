@@ -29,6 +29,12 @@ with lib; let
       ip = "10.100.0.4";
       podCIDR = "10.42.1.0/24";
     };
+    venus = {
+      pubkey = "ApFcWRA4USpfLkarEtl0KVLeJdLWSuRUJL4+Hj2EegE=";
+      endpoint = "venus.rhodate.com:51820";
+      ip = "10.100.0.5";
+      podCIDR = "10.42.3.0/24";
+    };
   };
   peers = filterAttrs (name: peer: name != config.networking.hostName) hosts;
 in {
