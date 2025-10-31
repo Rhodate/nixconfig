@@ -41,6 +41,7 @@
   services.k3s.extraFlags = lib.mkAfter [
     "--node-taint node-role=ingress:NoSchedule"
     "--node-label node-role=ingress"
+    "--node-label svccontroller.k3s.cattle.io/enablelb=true"
   ];
   
   users.mutableUsers = false;

@@ -23,6 +23,14 @@ return require('lazy').setup({
   },
 
   {
+    "qvalentin/helm-ls.nvim",
+    ft = "helm",
+    opts = {
+        -- leave empty or see below
+    },
+  },
+
+  {
     'lucidph3nx/nvim-sops',
     event = { 'BufEnter' },
   },

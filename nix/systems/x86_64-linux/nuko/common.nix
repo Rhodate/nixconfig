@@ -31,7 +31,6 @@
         hostedZoneId = "Z004213625PGR7UVYSB0C";
         awsCredentialsFile = config.sops.secrets.route53-dyndns-credentials.path;
         records = {
-          git = {};
           k8s = {};
         };
       };

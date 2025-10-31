@@ -39,7 +39,6 @@
     whois
     kubectl
     cryptsetup
-    libressl_3_9
     kubernetes-helm
     yazi
     radeontop

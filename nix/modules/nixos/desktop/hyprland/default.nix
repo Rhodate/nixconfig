@@ -1,4 +1,4 @@
-{lib, ...}:
+{lib, config, ...}:
 with lib; {
   options = {
     swarm.desktop.hyprland = {
@@ -9,7 +9,7 @@ with lib; {
       };
     };
   };
-  config = {
+  config = mkIf config.swarm.desktop.hyprland.enable {
     programs.uwsm.enable = true;
 
     programs.uwsm.waylandCompositors = {

@@ -29,12 +29,12 @@ with lib; {
     podCidr = mkOption {
       description = "k3s pod cidr";
       type = types.str;
-      default = "10.42.0.0/16";
+      default = "10.42.0.0/16,fc00:10::/56";
     };
     serviceCidr = mkOption {
       description = "k3s service cidr";
       type = types.str;
-      default = "10.43.0.0/16";
+      default = "10.43.0.0/16,fc00:20::/108";
     };
   };
   config = mkIf config.swarm.server.k3s.enable {
@@ -59,16 +59,18 @@ with lib; {
         (mkIf (config.swarm.server.k3s.role == "server") [
           "--disable metrics-server"
           "--disable traefik"
-          "--flannel-backend=host-gw"
+          "--flannel-backend=vxlan"
           "--service-cidr=${config.swarm.server.k3s.serviceCidr}"
+          "--cluster-cidr=${config.swarm.server.k3s.podCidr}"
           "--kube-apiserver-arg=\"admission-control-config-file=${./psa.yaml}\""
           "--secrets-encryption"
+          "--kube-apiserver-arg=feature-gates=MutatingAdmissionPolicy=true"
+          "--kube-apiserver-arg=\"--runtime-config=admissionregistration.k8s.io/v1beta1=true\""
         ])
         [
           (mkIf (!config.swarm.server.k3s.clusterInit) "--server=https://${config.swarm.server.k3s.clusterDns}:6443")
           "--flannel-iface=wg0"
-          "--kubelet-arg=--pod-cidr=${config.swarm.hardware.networking.wireguard.hosts.${config.networking.hostName}.podCIDR}"
-          "--node-ip=${config.swarm.hardware.networking.wireguard.ip}"
+          "--node-ip=${config.swarm.hardware.networking.wireguard.ip},${config.swarm.hardware.networking.wireguard.ipv6}"
         ]
       ];
       tokenFile = config.sops.secrets.k3s-token.path;

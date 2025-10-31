@@ -12,7 +12,6 @@
   nixpkgs.config.allowUnfree = true;
 
   home.packages = with pkgs; [
-    libressl_3_9
     traceroute
     dnsutils
     usbutils

@@ -43,6 +43,8 @@ in {
         values = {
           obs.callhome.enabled = false;
           eventing.enabled = false;
+          alloy.enabled = false;
+          loki.enabled = false;
         };
       };
     };

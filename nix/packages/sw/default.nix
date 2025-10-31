@@ -30,6 +30,9 @@ with lib;
         operations. The application of this option depends on the
         specific deployment path (local or remote).
 
+      -b, --boot
+        Deploys the config to be applied only on next boot, for breaking changes.
+
     "
           exit 1
         fi
@@ -39,6 +42,7 @@ with lib;
         host=
         debug=
         cores=4
+        boot=
         while [ "$#" -gt 0 ]; do
           case "$1" in
             --debug)
@@ -55,6 +59,12 @@ with lib;
               cores=$2
               shift
               ;;
+            -b)
+              boot=1
+              ;;
+            --boot)
+              boot=1
+              ;;
             *)
               if [ -n "$host" ]; then
                 echo "Only expected one host to be specified"
@@ -69,6 +79,11 @@ with lib;
         buildArgs=
         if [ -n "$debug" ]; then
           buildArgs="--show-trace"
+        fi
+
+        verb=switch
+        if [ -n "$boot" ]; then
+          verb=boot
         fi
 
         if [ "$command" = "deploy" ]; then
@@ -88,7 +103,7 @@ with lib;
               sudo nix-env -p /nix/var/nix/profiles/system --set $system
 
               # Switch to the new configuration
-              sudo NIXOS_INSTALL_BOOTLOADER=1 $system/bin/switch-to-configuration switch
+              sudo NIXOS_INSTALL_BOOTLOADER=1 $system/bin/switch-to-configuration $verb
 
               # Verify the profile was updated
               echo 'New system profile:'
@@ -110,7 +125,7 @@ with lib;
             host=$(hostname)
             # Do it separately from switching, so that I can see the changes before typing my password.
             ${pkgs.nix-output-monitor}/bin/nom build .\#nixosConfigurations.''${host}.config.system.build.toplevel $buildArgs --print-out-paths -j $cores
-            sudo nixos-rebuild switch --fast --flake .\#''${host} -L --cores $cores --show-trace
+            sudo nixos-rebuild $verb --no-reexec --flake .\#''${host} -L --cores $cores --show-trace
           fi
         fi
   ''

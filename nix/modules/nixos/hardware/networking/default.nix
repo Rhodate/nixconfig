@@ -27,9 +27,6 @@ with lib; {
     mkIf cfg.enable {
       networking = {
         hostId = cfg.hostId;
-        nat.enable = true;
-        nat.enableIPv6 = true;
-        nat.externalInterface = cfg.networkDevice;
         firewall.enable = true;
       };
     };
