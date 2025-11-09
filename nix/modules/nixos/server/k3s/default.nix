@@ -95,7 +95,6 @@ with lib; {
         2379
         2380
       ];
-      allowedTCPPortRanges = [ { from = 0; to = 65535; } ];
       allowedUDPPorts = [
         8472
         51821

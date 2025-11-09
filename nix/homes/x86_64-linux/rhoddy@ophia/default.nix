@@ -63,7 +63,6 @@
     pciutils
     lsof
     firefox
-    tor-browser-bundle-bin
     signal-desktop
     tree
     tmatrix

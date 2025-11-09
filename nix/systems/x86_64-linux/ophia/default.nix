@@ -48,6 +48,7 @@ with lib; {
       sw.enable = true;
     };
     desktop.hyprland.enable = true;
+    desktop.tor.enable = true;
     grub.enable = true;
     server = {
       k3s = {

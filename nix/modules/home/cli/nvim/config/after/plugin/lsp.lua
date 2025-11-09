@@ -19,12 +19,24 @@ local lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 require('mason').setup({})
 require('mason-lspconfig').setup({
-  ensure_installed = { 'eslint', 'ts_ls', 'rust_analyzer', 'omnisharp' },
+  ensure_installed = { 'eslint', 'ts_ls', 'rust_analyzer' },
   handlers = {
     -- Default setup
     function(server)
       require('lspconfig')[server].setup({
-        capabilities = lsp_capabilities
+        capabilities = lsp_capabilities,
+        settings = {
+          Lua = {
+            diagnostics = {
+              globals = { 'vim' }
+            },
+            workspace = {
+              library = {
+                vim.env.VIMRUNTIME
+              },
+            },
+          }
+        },
       })
     end,
     lua_ls = function()
@@ -32,23 +44,12 @@ require('mason-lspconfig').setup({
         capabilities = lsp_capabilities,
       })
     end,
-  }
-})
-
--- Fix Undefined global 'vim'
-require('lspconfig').lua_ls.setup({
-  capabilities = lsp_capabilities,
-  settings = {
-    Lua = {
-      diagnostics = {
-        globals = { 'vim' }
-      },
-      workspace = {
-        library = {
-          vim.env.VIMRUNTIME
-        },
-      },
-    }
+    csharp_ls = function()
+      require('lspconfig').csharp_ls.setup({
+        capabilities = lsp_capabilities,
+      })
+      require("csharpls_extended").buf_read_cmd_bind()
+    end,
   }
 })
 

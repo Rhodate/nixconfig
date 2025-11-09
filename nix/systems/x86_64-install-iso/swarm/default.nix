@@ -11,7 +11,6 @@
   ];
 
   swarm.hardware.networking.enable = false;
-  swarm.hardware.networking.firewall.enable = false;
   swarm.users.enable = false;
   swarm.fs.type = "zfs";
 

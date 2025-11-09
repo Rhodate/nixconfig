@@ -12,6 +12,11 @@ with lib; {
       type = types.bool;
       default = false;
     };
+    port = mkOption {
+      description = "SSH port";
+      type = types.int;
+      default = 222;
+    };
   };
 
   config = let
@@ -23,10 +28,9 @@ with lib; {
           enable = true;
           settings.PasswordAuthentication = false;
           settings.KbdInteractiveAuthentication = false;
-          ports = [222];
+          ports = [config.swarm.ssh.port];
         };
         users.users.${swarm.user}.openssh.authorizedKeys.keys = swarm.publicKeys;
-
       })
       (mkIf (cfg.enable && (config.fileSystems."/".fsType == "tmpfs")) {
         # Use persistent SSH keys

@@ -34,16 +34,11 @@
       k3s = {
         enable = true;
         role = "agent";
+        externalIp = "2600:1f11:86:db03:fb8a:4f91:6b8:db58";
       };
     };
   };
 
-  services.k3s.extraFlags = lib.mkAfter [
-    "--node-taint node-role=ingress:NoSchedule"
-    "--node-label node-role=ingress"
-    "--node-label svccontroller.k3s.cattle.io/enablelb=true"
-  ];
-  
   users.mutableUsers = false;
 
   system.stateVersion = "24.11";

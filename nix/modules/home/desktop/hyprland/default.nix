@@ -185,7 +185,7 @@ with lib; {
             enabled = true;
             bezier = [
               "overshot,0.05,0.9,0.1,1.1"
-              "overshot,0.13,0.99,0.29,1."
+              "overshot,0.13,0.99,0.29,1"
             ];
             animation = [
               "windows,1,7,overshot,slide"
