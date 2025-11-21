@@ -1,7 +1,6 @@
 {
   lib,
   config,
-  pkgs,
   ...
 }: with lib; {
   options.swarm.server.k3s = {

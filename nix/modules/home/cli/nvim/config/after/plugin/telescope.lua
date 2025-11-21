@@ -4,12 +4,20 @@ telescope.setup {
   extensions = {
     file_browser = {
       path = '%:p:h'
-    }
+    },
   },
   pickers = {
     find_files = {
       hidden = true
-    }
+    },
+    git_files = {
+      hidden = true
+    },
+    live_grep = {
+      additional_args = function()
+        return { "--hidden" }
+      end
+    },
   },
 }
 

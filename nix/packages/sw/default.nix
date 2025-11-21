@@ -88,12 +88,11 @@ with lib;
 
         if [ "$command" = "deploy" ]; then
           if [ -n "$host" ]; then
-            ${pkgs.nix-output-monitor}/bin/nom build .\#nixosConfigurations.''${host}.config.system.build.toplevel $buildArgs --print-out-paths -j $cores
+            system=$(${pkgs.nix-output-monitor}/bin/nom build .\#nixosConfigurations.''${host}.config.system.build.toplevel $buildArgs --print-out-paths -j $cores --no-link --print-out-paths)
             if [ "$?" -ne 0 ]; then
               echo "Build failed"
               exit 1
             fi
-            system=$(readlink -f result)
             echo "Copying closure to ''${host}"
             ${pkgs.nix}/bin/nix-copy-closure --to ${swarm.user}@''${host} --use-substitutes $system
 

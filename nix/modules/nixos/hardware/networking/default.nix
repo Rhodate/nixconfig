@@ -28,6 +28,10 @@ with lib; {
       networking = {
         hostId = cfg.hostId;
         firewall.enable = true;
+        dhcpcd = {
+          enable = true;
+          allowInterfaces = [ cfg.networkDevice ];
+        };
       };
     };
 }

@@ -3,7 +3,8 @@
   lib,
   ...
 }:
-with lib; let
+with lib;
+let
   hosts = {
     ophia = {
       pubkey = "y3lmjPPBHLz02L+xpRTycjCOXZJbXZK09pDfu9DkuxM=";
@@ -37,7 +38,8 @@ with lib; let
     };
   };
   peers = filterAttrs (name: peer: name != config.networking.hostName) hosts;
-in {
+in
+{
   options.swarm.hardware.networking.wireguard = {
     enable = mkEnableOption "Enables connecting to the internal wireguard vpn";
 
@@ -71,29 +73,30 @@ in {
 
     networking.firewall.allowedUDPPorts = [ 51820 ];
 
-    networking.wireguard.interfaces = {
-      wg0 = {
-        ips = [
-          "${hosts.${config.networking.hostName}.ip}/24"
-          "${hosts.${config.networking.hostName}.ipv6}/58"
+    networking.wireguard.interfaces.wg0 = {
+      ips = [
+        "${hosts.${config.networking.hostName}.ip}/24"
+        "${hosts.${config.networking.hostName}.ipv6}/58"
+      ];
+      listenPort = 51820;
+
+      privateKeyFile = config.swarm.hardware.networking.wireguard.privateKeyFile;
+
+      # Hack from the wiki. Set persistent keepalive here so it actually connects
+      postSetup = mapAttrsToList (
+        name: peer: "wg set wg0 peer ${peer.pubkey} persistent-keepalive 25"
+      ) peers;
+      peers = mapAttrsToList (name: peer: {
+        publicKey = peer.pubkey;
+        endpoint = peer.endpoint;
+        dynamicEndpointRefreshSeconds = 30;
+        allowedIPs = mkMerge [
+          [
+            "${peer.ip}/32"
+            "${peer.ipv6}/128"
+          ]
         ];
-        listenPort = 51820;
-
-        privateKeyFile = config.swarm.hardware.networking.wireguard.privateKeyFile;
-
-        # Hack from the wiki. Set persistent keepalive here so it actually connects
-        postSetup = mapAttrsToList (name: peer: "wg set wg0 peer ${peer.pubkey} persistent-keepalive 25") peers;
-        peers = mapAttrsToList (name: peer: {
-          publicKey = peer.pubkey;
-          endpoint = peer.endpoint;
-          allowedIPs = mkMerge [
-            [
-              "${peer.ip}/32"
-              "${peer.ipv6}/128"
-            ]
-          ];
-        }) peers;
-      };
+      }) peers;
     };
   };
 }

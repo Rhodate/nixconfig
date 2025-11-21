@@ -12,7 +12,7 @@ vim.keymap.set('n', 'N', 'Nzzzv')
 vim.keymap.set('n', '<leader>F', function()
   vim.lsp.buf.format {
     -- USE FUCKING ESLINT-LSP FOR FORMATTING
-    filter = function(client) return client.name ~= "tsserver" end
+    filter = function(client) return client.name ~= "ts_ls" end
   }
 end)
 vim.keymap.set('v', '<leader>F', function()
@@ -22,7 +22,7 @@ vim.keymap.set('v', '<leader>F', function()
       ["start"] = vim.api.nvim_buf_get_mark(0, "<"),
       ["end"] = vim.api.nvim_buf_get_mark(0, ">"),
     },
-    filter = function(client) return client.name ~= "tsserver" end
+    filter = function(client) return client.name ~= "ts_ls" end
   })
   vim.api.nvim_feedkeys('<esc>', 'x', false)
 end)
@@ -30,5 +30,7 @@ vim.keymap.set({ 'n', 'v' }, '<leader>y', '"+y')
 vim.keymap.set({ 'n', 'v' }, '<leader>p', '"+p')
 vim.keymap.set({ 'n', 'v' }, '<leader>P', '"+P')
 
-vim.keymap.set('n', '<C-]>', ':bnext\n', { remap = true })
-vim.keymap.set('n', '<C-[>', ':bprev\n', { remap = true })
+vim.keymap.set('n', '<Tab>', ':bnext\n')
+vim.keymap.set('n', '<S-Tab>', ':bprev\n')
+
+vim.keymap.set({ 'n', 'v' }, ';', ':')

@@ -15,51 +15,115 @@ return require('lazy').setup({
   'tpope/vim-eunuch',
 
   {
+    "folke/snacks.nvim",
+    priority = 1000,
+    lazy = false,
+    opts = {
+      bigfile = { enabled = true },
+      indent = { enabled = true },
+      input = { enabled = true },
+      quickfile = { enabled = true },
+      scope = { enabled = true },
+      scroll = { enabled = true },
+      statuscolumn = { enabled = true },
+    },
+  },
+
+  {
+      "nvim-treesitter/nvim-treesitter",
+      dependencies = { "OXY2DEV/markview.nvim" },
+      lazy = false,
+  },
+
+  {
+    "arakkkkk/kanban.nvim",
+    -- Optional
+    dependencies = {
+      "nvim-telescope/telescope.nvim",
+    },
+  
+    config = function()
+      require("kanban").setup({
+        markdown = {
+          description_folder = "./tasks/", -- Path to save the file corresponding to the task.
+          list_head = "## ",
+        },
+      })
+    end,
+  },
+
+  --{
+  --  "3rd/diagram.nvim",
+  --  dependencies = {
+  --    "3rd/image.nvim",
+  --  },
+  --  config = function()
+  --    require("image").setup({})
+  --    require("diagram").setup({
+  --      integrations = {
+  --        require("diagram.integrations.markdown"),
+  --        require("diagram.integrations.neorg"),
+  --      },
+  --      renderer_options = {
+  --        mermaid = {
+  --          theme = "forest",
+  --          scale = 4,
+  --        },
+  --        plantuml = {
+  --          charset = "utf-8",
+  --        },
+  --        d2 = {
+  --          theme_id = 1,
+  --        },
+  --        gnuplot = {
+  --          theme = "dark",
+  --          size = "800,600",
+  --        },
+  --      }
+  --    })
+  --  end
+  --},
+
+  {
     'Bekaboo/dropbar.nvim',
     -- optional, but required for fuzzy finder support
     dependencies = {
-      'nvim-telescope/telescope-fzf-native.nvim'
-    }
-  },
-
-  {
-    "qvalentin/helm-ls.nvim",
-    ft = "helm",
-    opts = {
-        -- leave empty or see below
-    },
-  },
-
-  {
-    'lucidph3nx/nvim-sops',
-    event = { 'BufEnter' },
-  },
-
-  {
-      "iamcco/markdown-preview.nvim",
-      cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
-      ft = { "markdown" },
-      build = function() vim.fn["mkdp#util#install"]() end,
-  },
-
-  {
-    "Exafunction/codeium.nvim",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "hrsh7th/nvim-cmp",
+      'nvim-telescope/telescope-fzf-native.nvim',
+      build = 'make',
     },
     config = function()
-      require("codeium").setup({
-        virtual_text = {
-          enabled = true,
-          key_bindings = {
-            accept = "<A-f>",
-          },
-          workspace_root = "use_lsp",
-          enable_cmp_source = false,
-          enable_chat = true,
-        },
-      })
+      local dropbar_api = require('dropbar.api')
+      vim.keymap.set('n', '<Leader>;', dropbar_api.pick, { desc = 'Pick symbols in winbar' })
+      vim.keymap.set('n', '[;', dropbar_api.goto_context_start, { desc = 'Go to start of current context' })
+      vim.keymap.set('n', '];', dropbar_api.select_next_context, { desc = 'Select next context' })
+    end
+  },
+
+  {
+    "kkoomen/vim-doge",
+  },
+
+  {
+    "vuki656/package-info.nvim",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+    },
+    config = function()
+      require('package-info').setup()
+      -- Show dependency versions
+      vim.keymap.set({ "n" }, "<LEADER>ns", require("package-info").show, { silent = true, noremap = true })
+      -- Hide dependency versions
+      vim.keymap.set({ "n" }, "<LEADER>nc", require("package-info").hide, { silent = true, noremap = true })
+      -- Toggle dependency versions
+      vim.keymap.set({ "n" }, "<LEADER>nt", require("package-info").toggle, { silent = true, noremap = true })
+      -- Update dependency on the line
+      vim.keymap.set({ "n" }, "<LEADER>nu", require("package-info").update, { silent = true, noremap = true })
+      -- Delete dependency on the line
+      vim.keymap.set({ "n" }, "<LEADER>nd", require("package-info").delete, { silent = true, noremap = true })
+      -- Install a new dependency
+      vim.keymap.set({ "n" }, "<LEADER>ni", require("package-info").install, { silent = true, noremap = true })
+      -- Install a different dependency version
+      vim.keymap.set({ "n" }, "<LEADER>np", require("package-info").change_version, { silent = true, noremap = true })
     end
   },
 
@@ -76,10 +140,17 @@ return require('lazy').setup({
       { "<leader>F", function() require 'conform'.format { lsp_fallback = true } end, desc = "Format Buffer" },
     },
   },
-
   'lambdalisue/suda.vim',
 
   'rmagatti/auto-session',
+
+  -- {
+  --   'ahmedkhalf/project.nvim',
+  --   config = function()
+  --     require('project_nvim').setup({
+  --     })
+  --   end,
+  -- },
 
   {
     'mikesmithgh/kitty-scrollback.nvim',
@@ -95,34 +166,6 @@ return require('lazy').setup({
   },
 
   {
-    'declancm/cinnamon.nvim',
-    config = function()
-      require('cinnamon').setup {
-        keymaps = {
-          basic = true,
-          extra = true,
-        },
-        options = {
-          delay = 5,
-          max_delta = {
-            line = 100,
-            column = nil,
-          },
-          mode = "window",
-        },
-      }
-    end
-  },
-
-  {
-      "3rd/image.nvim",
-      build = false, -- so that it doesn't build the rock https://github.com/3rd/image.nvim/issues/91#issuecomment-2453430239
-      opts = {
-  	    processor = "magick_cli",
-      }
-  },
-
-  {
     "MunsMan/kitty-navigator.nvim",
     build = {
       "cp navigate_kitty.py ~/.config/kitty",
@@ -134,6 +177,45 @@ return require('lazy').setup({
         down = "<C-j>",
         up = "<C-k>",
         right = "<C-l>",
+      },
+    },
+  },
+
+  {
+    'zbirenbaum/copilot.lua',
+    cmd = 'Copilot',
+    event = 'InsertEnter',
+  },
+  {
+    'CopilotC-Nvim/CopilotChat.nvim',
+    dependencies = {
+      { 'zbirenbaum/copilot.lua' },                   -- or github/copilot.vim
+      { 'nvim-lua/plenary.nvim', branch = 'master' }, -- for curl, log wrapper
+    },
+    build = "make tiktoken",
+  },
+  {
+    "olimorris/codecompanion.nvim",
+    opts = {
+      --Refer to: https://codecompanion.olimorris.dev/configuration/introduction.html
+      adapters = {
+        copilot = function()
+          return require("codecompanion.adapters").extend("copilot", {
+            schema = {
+              model = {
+                default = "claude-3.7-sonnet",
+              },
+            },
+          })
+        end,
+      },
+      strategies = {
+        chat = { adapter = "copilot" },
+        inline = { adapter = "copilot" },
+        agent = { adapter = "copilot" },
+      },
+      opts = {
+        log_level = "DEBUG",
       },
     },
   },
@@ -160,6 +242,7 @@ return require('lazy').setup({
       'nvim-neotest/neotest-vim-test',
       'adrigzr/neotest-mocha',
       'nvim-neotest/nvim-nio',
+      'Nsidorenco/neotest-vstest',
     },
     config = function()
       require('neotest').setup({
@@ -174,6 +257,11 @@ return require('lazy').setup({
             cwd = function()
               return vim.fn.getcwd()
             end,
+          }),
+          require('neotest-vstest')({
+            dap_settings = {
+              type = 'coreclr',
+            },
           }),
         },
       })
@@ -218,9 +306,9 @@ return require('lazy').setup({
         'microsoft/vscode-js-debug',
         lazy = true,
         build = 'npm ci --legacy-peer-deps && npx gulp vsDebugServerBundle && rm -rf out && mv dist out'
-      }
+      },
     },
-    keys = '<leader>d',
+    keys = '<leader>e',
     config = function()
       require('rhodate.dap').setup()
     end

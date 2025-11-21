@@ -32,6 +32,8 @@ with lib; {
       vimdiffAlias = true;
       withNodeJs = true;
       withPython3 = true;
+
+      extraWrapperArgs = [ "--prefix" "PATH" ":" "${lib.makeBinPath [ pkgs.csharp-ls pkgs.nixfmt-rfc-style ]}"];
     };
   };
 }

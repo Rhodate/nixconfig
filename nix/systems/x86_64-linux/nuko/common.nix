@@ -10,7 +10,7 @@
 
   swarm = {
     virtualization = {
-      enable = true;
+      enable = false;
       implementation = "docker";
     };
     hardware.networking.wireguard.enable = true;

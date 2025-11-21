@@ -8,19 +8,19 @@ local function configure()
 
   local dap_breakpoint = {
     breakpoint = {
-      text = "",
+      text = " ",
       texthl = "LspDiagnosticsSignError",
       linehl = "",
       numhl = "",
     },
     rejected = {
-      text = "",
+      text = "❌",
       texthl = "LspDiagnosticsSignHint",
       linehl = "",
       numhl = "",
     },
     stopped = {
-      text = "",
+      text = "→",
       texthl = "LspDiagnosticsSignInformation",
       linehl = "DiagnosticUnderlineInfo",
       numhl = "LspDiagnosticsSignInformation",
@@ -55,10 +55,9 @@ end
 
 local function configure_debuggers()
   require("rhodate.dap.javascript").setup()
+  require("rhodate.dap.csharp").setup()
   require("rhodate.dap.keymaps").setup()
 end
-
-configure_debuggers()
 
 return {
   setup = function ()

@@ -14,7 +14,7 @@ with lib; {
     clusterDns = mkOption {
       description = "k3s DNS";
       type = types.str;
-      default = config.swarm.hardware.networking.wireguard.hosts.nuko-2.ip;
+      default = config.swarm.hardware.networking.wireguard.hosts.nuko-1.ip;
     };
     role = mkOption {
       description = "k3s role";

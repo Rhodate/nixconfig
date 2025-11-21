@@ -1,7 +1,7 @@
 {
   modulesPath,
   inputs,
-  lib,
+  pkgs,
   ...
 }: {
   imports = [
@@ -12,6 +12,10 @@
   virtualisation.diskSize = "auto";
   ec2.hvm = true;
   environment.enableAllTerminfo = true;
+  environment.systemPackages = [
+    pkgs.iotop
+    pkgs.tcpdump
+  ];
   security.sudo.wheelNeedsPassword = false;
 
   swarm = {
@@ -26,7 +30,7 @@
       };
     };
     virtualization = {
-      enable = true;
+      enable = false;
       implementation = "docker";
     };
     ssh.enable = true;

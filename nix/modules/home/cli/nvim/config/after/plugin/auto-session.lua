@@ -10,4 +10,3 @@ require('auto-session').setup {
     previewer = true,
   }
 }
-
