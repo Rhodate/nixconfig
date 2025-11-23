@@ -4,7 +4,8 @@
   config,
   ...
 }:
-with lib; {
+with lib;
+{
   options.swarm.virtualization = {
     enable = mkOption {
       type = with types; bool;
@@ -13,15 +14,22 @@ with lib; {
     };
 
     implementation = mkOption {
-      type = with types; enum ["docker" "podman" "both"];
+      type =
+        with types;
+        enum [
+          "docker"
+          "podman"
+          "both"
+        ];
       default = "both";
       description = "Whether to use Docker or Podman";
     };
   };
 
-  config = let
-    cfg = config.swarm.virtualization;
-  in
+  config =
+    let
+      cfg = config.swarm.virtualization;
+    in
     mkIf cfg.enable (mkMerge [
       {
         virtualisation.containers.enable = true;

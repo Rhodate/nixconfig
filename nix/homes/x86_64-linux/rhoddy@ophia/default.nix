@@ -1,17 +1,15 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  inputs,
+  system,
+  ...
+}:
+{
   swarm = {
     desktop = {
       hyprland.enable = true;
       dunst.enable = true;
       waybar.enable = true;
-      swww = {
-        enable = true;
-        defaultWallpaper = ./wallpapers/glt-12.jpg;
-        randomise = {
-          enable = true;
-          wallpaperFolder = ./wallpapers;
-        };
-      };
       kitty.enable = true;
     };
     gaming = {
@@ -74,7 +72,6 @@
     dmidecode
     automake
     vulkan-tools
-    glxinfo
     gimp
     libtool
     parted

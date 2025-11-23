@@ -4,9 +4,11 @@
   pkgs,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.swarm.hardware.amdgpu;
-in {
+in
+{
   options.swarm.hardware.amdgpu = with types; {
     enable = mkOption {
       description = "Enable drivers and patches for AMD hardware.";
@@ -31,7 +33,7 @@ in {
       clinfo
     ];
 
-    boot.initrd.kernelModules = ["amdgpu"];
-    services.xserver.videoDrivers = ["amdgpu"];
+    boot.initrd.kernelModules = [ "amdgpu" ];
+    services.xserver.videoDrivers = [ "amdgpu" ];
   };
 }

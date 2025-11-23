@@ -4,7 +4,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   options.swarm.desktop.waybar = {
     enable = mkOption {
       description = "Whether to enable and configure waybar";
@@ -13,35 +14,54 @@ with lib; {
     };
   };
 
-  config = let
-    cfg = config.swarm.desktop.waybar;
-  in
+  config =
+    let
+      cfg = config.swarm.desktop.waybar;
+    in
     mkIf cfg.enable {
-      home.packages = [pkgs.inter];
+      home.packages = [ pkgs.inter ];
 
       services.playerctld.enable = true;
 
       # Set up waybar to start when hyprland starts (would be easy to make this support other desktop environments and themes
-      wayland.windowManager.hyprland.settings.exec-once = ["${pkgs.uwsm}/bin/uwsm app -- ${pkgs.waybar}/bin/waybar"];
+      wayland.windowManager.hyprland.settings.exec-once = [
+        "${pkgs.uwsm}/bin/uwsm app -- ${pkgs.waybar}/bin/waybar"
+      ];
 
       programs.waybar = {
         enable = true;
-        package = pkgs.waybar.overrideAttrs (oldAttrs: {mesonFlags = oldAttrs.mesonFlags ++ ["-Dexperimental=true"];});
+        package = pkgs.waybar.overrideAttrs (oldAttrs: {
+          mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
+        });
         settings = {
           mainBar = {
             margin = "5";
             borderRadius = 10;
             layer = "bottom";
-            modules-left = ["custom/nix" "hyprland/workspaces" "mpris"];
-            modules-center = ["wlr/taskbar"];
-            modules-right = ["custom/task-context" "network" "network#speed" "memory" "cpu" "temperature" "clock" "custom/notification" "tray"];
+            modules-left = [
+              "custom/nix"
+              "hyprland/workspaces"
+              "mpris"
+            ];
+            modules-center = [ "wlr/taskbar" ];
+            modules-right = [
+              "custom/task-context"
+              "network"
+              "network#speed"
+              "memory"
+              "cpu"
+              "temperature"
+              "clock"
+              "custom/notification"
+              "tray"
+            ];
 
             persistent_workspaces = {
-              "1" = [];
-              "2" = [];
-              "3" = [];
-              "4" = [];
-              "5" = [];
+              "1" = [ ];
+              "2" = [ ];
+              "3" = [ ];
+              "4" = [ ];
+              "5" = [ ];
             };
 
             "hyprland/workspaces" = {
@@ -102,7 +122,12 @@ with lib; {
 
             temperature = {
               format = "{icon} {temperatureC} °C";
-              format-icons = ["" "" "" "󰈸"];
+              format-icons = [
+                ""
+                ""
+                ""
+                "󰈸"
+              ];
             };
 
             clock = {

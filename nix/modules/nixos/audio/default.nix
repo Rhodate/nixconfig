@@ -4,9 +4,11 @@
   pkgs,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.swarm.audio;
-in {
+in
+{
   options.swarm.audio = with types; {
     enable = mkOption {
       description = "Enable pipewire";
@@ -27,6 +29,6 @@ in {
     };
     programs.noisetorch.enable = true;
 
-    environment.systemPackages = with pkgs; [pavucontrol];
+    environment.systemPackages = with pkgs; [ pavucontrol ];
   };
 }

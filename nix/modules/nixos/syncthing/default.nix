@@ -3,7 +3,8 @@
   config,
   ...
 }:
-with lib; {
+with lib;
+{
   options.swarm.syncthing = {
     enable = mkEnableOption "Enable syncthing";
     keyFile = mkOption {
@@ -26,24 +27,28 @@ with lib; {
       group = "syncthing";
       settings = {
         devices = {
-          "galazy-s23-ultra" = {id = "ELKEX3W-EUIIOUM-QONMXGQ-EMMTNE7-HNVFSG2-EIUQHU5-QJ7GWGB-U4PVTQB";};
+          "galazy-s23-ultra" = {
+            id = "ELKEX3W-EUIIOUM-QONMXGQ-EMMTNE7-HNVFSG2-EIUQHU5-QJ7GWGB-U4PVTQB";
+          };
         };
         folders = {
           "Images" = {
             path = "/home/rhoddy/Images";
             id = "tfxqa-ug4ve";
-            devices = ["galazy-s23-ultra"];
+            devices = [ "galazy-s23-ultra" ];
           };
         };
       };
     };
     users.users = {
-      syncthing.extraGroups = ["users"];
-      "${swarm.user}".extraGroups = ["syncthing"];
+      syncthing.extraGroups = [ "users" ];
+      "${swarm.user}".extraGroups = [ "syncthing" ];
     };
     systemd = {
       tmpfiles.rules = mkMerge [
-        (builtins.map (folder: "d ${folder.path} 2770 ${swarm.user} syncthing") (builtins.attrValues config.services.syncthing.settings.folders))
+        (builtins.map (folder: "d ${folder.path} 2770 ${swarm.user} syncthing") (
+          builtins.attrValues config.services.syncthing.settings.folders
+        ))
       ];
       services.syncthing = {
         environment.STNODEFAULTFOLDER = "true";

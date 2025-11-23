@@ -3,9 +3,11 @@
   config,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.swarm.hardware.nvidia;
-in {
+in
+{
   options.swarm.hardware.nvidia = with types; {
     enable = mkOption {
       description = "Enable drivers and patches for Nvidia hardware.";
@@ -31,7 +33,9 @@ in {
       variables = {
         CUDA_CACHE_PATH = "$XDG_CACHE_HOME/nv";
       };
-      shellAliases = {nvidia-settings = "nvidia-settings --config='$XDG_CONFIG_HOME'/nvidia/settings";};
+      shellAliases = {
+        nvidia-settings = "nvidia-settings --config='$XDG_CONFIG_HOME'/nvidia/settings";
+      };
       sessionVariables = {
         WLR_NO_HARDWARE_CURSORS = "1";
         WLR_DRM_NO_ATOMIC = "1";
@@ -42,6 +46,6 @@ in {
       };
     };
 
-    services.xserver.videoDrivers = ["nvidia"];
+    services.xserver.videoDrivers = [ "nvidia" ];
   };
 }

@@ -4,7 +4,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   options.swarm.desktop.mpvpaper = {
     enable = mkOption {
       description = "Whether to enable mpvpaper for wayland wallpapers";
@@ -18,9 +19,10 @@ with lib; {
     };
   };
 
-  config = let
-    cfg = config.swarm.desktop.mpvpaper;
-  in
+  config =
+    let
+      cfg = config.swarm.desktop.mpvpaper;
+    in
     mkIf cfg.enable (mkMerge [
       {
         home.packages = with pkgs; [
@@ -28,15 +30,14 @@ with lib; {
         ];
       }
 
-      (mkIf config.swarm.desktop.hyprland.enable
-        {
-          wayland.windowManager.hyprland = {
-            settings = {
-              exec-once = [
-                ''mpvpaper -o "input-ipc-server=/tmp/mpv-socket" "*" ${cfg.wallpaper}''
-              ];
-            };
+      (mkIf config.swarm.desktop.hyprland.enable {
+        wayland.windowManager.hyprland = {
+          settings = {
+            exec-once = [
+              ''mpvpaper -o "input-ipc-server=/tmp/mpv-socket" "*" ${cfg.wallpaper}''
+            ];
           };
-        })
+        };
+      })
     ]);
 }

@@ -3,17 +3,25 @@
   lib,
   ...
 }:
-with lib; {
+with lib;
+{
   options.swarm.hardware = {
     firmware = mkOption {
-      type = with types; enum ["free" "redistributable" "all"];
+      type =
+        with types;
+        enum [
+          "free"
+          "redistributable"
+          "all"
+        ];
       default = "redistributable";
     };
   };
 
-  config = let
-    firmware = config.swarm.hardware.firmware;
-  in
+  config =
+    let
+      firmware = config.swarm.hardware.firmware;
+    in
     mkMerge [
       (mkIf (firmware == "redistributable") {
         hardware.enableRedistributableFirmware = true;

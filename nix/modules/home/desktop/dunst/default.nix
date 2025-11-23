@@ -4,7 +4,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   options.swarm.desktop.dunst = {
     enable = mkOption {
       description = "Whether to enable and configure Dunst";
@@ -13,11 +14,15 @@ with lib; {
     };
   };
 
-  config = let
-    cfg = config.swarm.desktop.dunst;
-  in
+  config =
+    let
+      cfg = config.swarm.desktop.dunst;
+    in
     mkIf cfg.enable {
-      home.packages = with pkgs; [inter mpv];
+      home.packages = with pkgs; [
+        inter
+        mpv
+      ];
 
       services.dunst = {
         enable = true;

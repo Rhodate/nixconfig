@@ -4,9 +4,11 @@
   config,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.swarm.cli.tenere;
-in {
+in
+{
   options.swarm.cli.tenere = with types; {
     enable = mkOption {
       description = "Enable tenere";

@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   swarm = {
     cli = {
       shell = "zsh";

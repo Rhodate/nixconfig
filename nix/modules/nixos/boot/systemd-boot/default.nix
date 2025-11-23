@@ -5,7 +5,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   options.swarm.systemdboot = with types; {
     enable = mkOption {
       description = "Use systemdboot as the bootloader";
@@ -14,9 +15,10 @@ with lib; {
     };
   };
 
-  config = let
-    cfg = config.swarm.systemdboot;
-  in
+  config =
+    let
+      cfg = config.swarm.systemdboot;
+    in
     mkIf cfg.enable {
       boot.loader = {
         systemd-boot.enable = true;

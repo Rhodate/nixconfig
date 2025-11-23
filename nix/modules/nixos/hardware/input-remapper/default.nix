@@ -3,7 +3,8 @@
   config,
   ...
 }:
-with lib; {
+with lib;
+{
   options.swarm.hardware.input-remapper = {
     enable = mkEnableOption "Whether to enable input remapper";
   };

@@ -4,7 +4,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   options.swarm.core = with types; {
     enable = mkOption {
       description = "Enable core nix options";
@@ -26,14 +27,15 @@ with lib; {
       misc = mkOption {
         description = "Other supported locales";
         type = with types; listOf str;
-        default = [];
+        default = [ ];
       };
     };
   };
 
-  config = let
-    cfg = config.swarm.core;
-  in
+  config =
+    let
+      cfg = config.swarm.core;
+    in
     mkIf cfg.enable {
       programs.nix-ld.enable = true;
       security.rtkit.enable = true;
@@ -70,9 +72,12 @@ with lib; {
           experimental-features = [
             "nix-command"
             "flakes"
+            "cgroups"
           ];
 
-          trusted-users = ["@wheel"];
+          use-cgroups = true;
+
+          trusted-users = [ "@wheel" ];
 
           auto-optimise-store = true;
         };
@@ -85,7 +90,10 @@ with lib; {
       time.timeZone = cfg.timezone;
       i18n = {
         defaultLocale = cfg.locale.main;
-        supportedLocales = ["${cfg.locale.main}/UTF-8"] ++ (builtins.map (l: "${l}/UTF-8") cfg.locale.misc);
+        supportedLocales = [
+          "${cfg.locale.main}/UTF-8"
+        ]
+        ++ (builtins.map (l: "${l}/UTF-8") cfg.locale.misc);
         extraLocaleSettings = {
           LC_CTYPE = cfg.locale.main;
           LC_NUMERIC = cfg.locale.main;

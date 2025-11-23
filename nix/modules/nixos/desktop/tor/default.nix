@@ -3,14 +3,16 @@
   pkgs,
   config,
   ...
-}: with lib; {
+}:
+with lib;
+{
   options.swarm.desktop.tor = {
     enable = mkEnableOption "Enables tor";
   };
 
   config = mkIf config.swarm.desktop.tor.enable {
     environment.systemPackages = with pkgs; [
-      tor-browser-bundle-bin
+      tor-browser
     ];
     services.tor = {
       enable = true;

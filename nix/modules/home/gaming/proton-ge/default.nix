@@ -4,9 +4,11 @@
   config,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.swarm.gaming.proton-ge;
-in {
+in
+{
   options.swarm.gaming.proton-ge = {
     enable = mkOption {
       description = "Install and configure proton-ge";

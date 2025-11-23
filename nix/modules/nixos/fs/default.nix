@@ -5,10 +5,12 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   options.swarm.fs = with types; {
     type = mkOption {
-      type = with types;
+      type =
+        with types;
         nullOr (enum [
           "btrfs"
           "zfs"
@@ -18,14 +20,15 @@ with lib; {
     };
   };
 
-  config = let
-    cfg = config.swarm.fs;
-  in
+  config =
+    let
+      cfg = config.swarm.fs;
+    in
     mkMerge [
       {
         boot = {
           tmp.cleanOnBoot = true;
-          supportedFilesystems = ["ntfs"];
+          supportedFilesystems = [ "ntfs" ];
         };
 
         environment.systemPackages = with pkgs; [
@@ -36,7 +39,7 @@ with lib; {
 
       (mkIf (cfg.type == "zfs") {
         boot = {
-          supportedFilesystems = ["zfs"];
+          supportedFilesystems = [ "zfs" ];
           zfs.forceImportRoot = false;
         };
       })

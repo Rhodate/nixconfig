@@ -3,7 +3,8 @@
   lib,
   ...
 }:
-with lib; {
+with lib;
+{
   options.swarm.cli.fzf = {
     enable = mkOption {
       description = "Enable fzf cli util";

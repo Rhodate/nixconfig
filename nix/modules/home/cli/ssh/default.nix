@@ -3,7 +3,8 @@
   lib,
   ...
 }:
-with lib; {
+with lib;
+{
   options.swarm.cli.ssh = {
     enable = mkOption {
       description = "Enable ssh";
@@ -18,14 +19,15 @@ with lib; {
   config = mkIf config.swarm.cli.ssh.enable {
     programs.ssh = {
       enable = true;
-      matchBlocks = mkMerge (map (hostname: {
+      matchBlocks = mkMerge (
+        map (hostname: {
           ${hostname} = {
             hostname = "${hostname}.${swarm.domainName}";
             user = swarm.user;
             port = 222;
           };
-        })
-        config.swarm.cli.ssh.systems);
+        }) config.swarm.cli.ssh.systems
+      );
     };
   };
 }

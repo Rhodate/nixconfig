@@ -3,12 +3,12 @@
   lib,
   pkgs,
   inputs,
-  system,
   ...
 }:
-with lib; {
+with lib;
+{
   # HACK: Here, because importing in flake.nix does not work.
-  imports = [inputs.hyprland.homeManagerModules.default];
+  imports = [ inputs.hyprland.homeManagerModules.default ];
 
   options.swarm.desktop.hyprland = {
     enable = mkOption {
@@ -18,30 +18,35 @@ with lib; {
     };
   };
 
-  config = let
-    cfg = config.swarm.desktop.hyprland;
-  in
+  config =
+    let
+      cfg = config.swarm.desktop.hyprland;
+    in
     mkIf cfg.enable {
       home.packages = with pkgs; [
         inputs.hyprland-contrib.packages.x86_64-linux.grimblast
         playerctl
       ];
 
-      xdg.portal = let
-        cfg = config.wayland.windowManager.hyprland;
-      in {
-        enable = true;
-        xdgOpenUsePortal = true;
-        extraPortals = [
-          pkgs.xdg-desktop-portal-gtk
-        ];
-        configPackages = lib.mkDefault [cfg.finalPackage];
-      };
+      xdg.portal =
+        let
+          cfg = config.wayland.windowManager.hyprland;
+        in
+        {
+          enable = true;
+          xdgOpenUsePortal = true;
+          extraPortals = [
+            pkgs.xdg-desktop-portal-gtk
+          ];
+          configPackages = lib.mkDefault [ cfg.finalPackage ];
+        };
 
       wayland.windowManager.hyprland = {
         enable = true;
 
-        package = inputs.hyprland.packages.${system}.hyprland;
+        package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+        portalPackage =
+          inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
 
         plugins = [
         ];

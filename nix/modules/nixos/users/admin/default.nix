@@ -3,24 +3,24 @@
   lib,
   ...
 }:
-with lib; let
+with lib;
+let
   # Only add these groups if they are present to avoid clutter.
-  ifPresent = with builtins;
-    groups: filter (G: hasAttr G config.users.groups) groups;
-in {
+  ifPresent = with builtins; groups: filter (G: hasAttr G config.users.groups) groups;
+in
+{
   config = mkIf config.swarm.users.enable {
-    users.users.${swarm.user}.extraGroups =
-      [
-        "wheel"
-        "input"
-      ]
-      ++ ifPresent [
-        "networkmanager"
-        "docker"
-        "podman"
-        "git"
-        "lxd"
-        "syncthing"
-      ];
+    users.users.${swarm.user}.extraGroups = [
+      "wheel"
+      "input"
+    ]
+    ++ ifPresent [
+      "networkmanager"
+      "docker"
+      "podman"
+      "git"
+      "lxd"
+      "syncthing"
+    ];
   };
 }

@@ -3,7 +3,8 @@
   lib,
   ...
 }:
-with lib; {
+with lib;
+{
   options.swarm.desktop.kitty = {
     enable = mkOption {
       description = "Whether to enable and configure kitty terminal";
@@ -12,9 +13,10 @@ with lib; {
     };
   };
 
-  config = let
-    cfg = config.swarm.desktop.kitty;
-  in
+  config =
+    let
+      cfg = config.swarm.desktop.kitty;
+    in
     mkIf cfg.enable {
       home.file.".config/kitty/tab_bar.py" = {
         source = ./res/tab_bar.py;

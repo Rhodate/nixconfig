@@ -3,7 +3,8 @@
   lib,
   ...
 }:
-with lib; {
+with lib;
+{
   options.swarm.cli.direnv = {
     enable = mkOption {
       description = "Enable direnv cli util";

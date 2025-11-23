@@ -3,7 +3,8 @@
   config,
   ...
 }:
-with lib; {
+with lib;
+{
   options = {
     swarm.core.enable = mkOption {
       description = "Whether to enable core Home-manager options";
@@ -31,32 +32,36 @@ with lib; {
 
     xdg = {
       enable = true;
-      userDirs = let
-        inherit (config.home) homeDirectory;
-      in {
-        enable = true;
-        createDirectories = true;
+      userDirs =
+        let
+          inherit (config.home) homeDirectory;
+        in
+        {
+          enable = true;
+          createDirectories = true;
 
-        # Create these automatically.
-        documents = "${homeDirectory}/Documents";
-        music = "${homeDirectory}/Music";
-        pictures = "${homeDirectory}/Images";
-        videos = "${homeDirectory}/Videos";
+          # Create these automatically.
+          documents = "${homeDirectory}/Documents";
+          music = "${homeDirectory}/Music";
+          pictures = "${homeDirectory}/Images";
+          videos = "${homeDirectory}/Videos";
 
-        # Don't need these.
-        publicShare = null;
-        templates = null;
-        desktop = null;
-      };
+          # Don't need these.
+          publicShare = null;
+          templates = null;
+          desktop = null;
+        };
 
       mime.enable = true;
-      mimeApps = let
-        mimes = {};
-      in {
-        enable = true;
-        associations.added = mimes;
-        defaultApplications = mimes;
-      };
+      mimeApps =
+        let
+          mimes = { };
+        in
+        {
+          enable = true;
+          associations.added = mimes;
+          defaultApplications = mimes;
+        };
     };
 
     # Nicely reload user services on rebuild.

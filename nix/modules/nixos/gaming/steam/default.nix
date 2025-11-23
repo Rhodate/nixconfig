@@ -4,7 +4,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   options.swarm.gaming.steam = {
     enable = mkOption {
       description = "Whether to enable steam";

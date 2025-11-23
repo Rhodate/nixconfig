@@ -4,7 +4,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   options.swarm.console = {
     enable = mkOption {
       description = "Whether to configure the Linux TTY";

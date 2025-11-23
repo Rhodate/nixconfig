@@ -3,7 +3,8 @@
   lib,
   ...
 }:
-with lib; {
+with lib;
+{
   options.swarm.cli.zoxide = {
     enable = mkOption {
       description = "Enable zoxide cli util";

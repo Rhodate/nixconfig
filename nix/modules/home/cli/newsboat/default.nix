@@ -3,7 +3,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   options.swarm.cli.newsboat = {
     enable = mkOption {
       description = "Whether this user needs newsboat support";

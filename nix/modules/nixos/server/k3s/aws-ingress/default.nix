@@ -2,7 +2,9 @@
   lib,
   config,
   ...
-}: with lib; {
+}:
+with lib;
+{
   options.swarm.server.k3s = {
     ipsConfigFile = mkOption {
       type = types.str;
@@ -15,12 +17,14 @@
       description = "k3s external IP";
     };
   };
-  config = mkIf (config.swarm.server.k3s.enable && (elem "amazon" config.system.nixos.tags)){
+  config = mkIf (config.swarm.server.k3s.enable && (elem "amazon" config.system.nixos.tags)) {
     services.k3s.extraFlags = lib.mkAfter [
       "--node-taint node-role=ingress:NoSchedule"
       "--node-label node-role=ingress"
       "--node-label svccontroller.k3s.cattle.io/enablelb=true"
-      (mkIf (config.swarm.server.k3s.externalIp != "") "--node-external-ip=${config.swarm.server.k3s.externalIp}")
+      (mkIf (
+        config.swarm.server.k3s.externalIp != ""
+      ) "--node-external-ip=${config.swarm.server.k3s.externalIp}")
       #"--node-external-ip=$IPV6_EXTERNAL_IP"
     ];
 

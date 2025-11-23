@@ -3,7 +3,8 @@
   lib,
   ...
 }:
-with lib; {
+with lib;
+{
   options.swarm.cli.btop = {
     enable = mkOption {
       description = "Enable btop cli util";

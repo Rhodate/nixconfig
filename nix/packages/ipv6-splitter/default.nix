@@ -1,4 +1,4 @@
-{pkgs, ...}:
+{ pkgs, ... }:
 pkgs.stdenv.mkDerivation {
   name = "ipv6-splitter";
   src = builtins.path {
@@ -13,7 +13,7 @@ pkgs.stdenv.mkDerivation {
     pkgs.perlPackages.DigestMD5
   ];
 
-  phases = ["installPhase"];
+  phases = [ "installPhase" ];
 
   installPhase = ''
     mkdir -p $out/bin
@@ -32,6 +32,6 @@ pkgs.stdenv.mkDerivation {
     '';
     homepage = null; # Replace with a homepage if you have one
     license = pkgs.lib.licenses.mit; # Choose appropriate license
-    maintainers = []; # Add your nixos.github account here.
+    maintainers = [ ]; # Add your nixos.github account here.
   };
 }

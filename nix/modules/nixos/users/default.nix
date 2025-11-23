@@ -3,7 +3,8 @@
   lib,
   ...
 }:
-with lib; {
+with lib;
+{
   options.swarm.users = {
     enable = mkOption {
       type = types.bool;
@@ -20,7 +21,7 @@ with lib; {
     })
 
     (mkIf config.swarm.audio.enable {
-      users.users.${swarm.user}.extraGroups = ["audio"];
+      users.users.${swarm.user}.extraGroups = [ "audio" ];
     })
   ]);
 }

@@ -3,7 +3,8 @@
   lib,
   ...
 }:
-with lib; {
+with lib;
+{
   options.swarm.hardware.networking = with types; {
     enable = mkOption {
       description = "Enable networking options";
@@ -21,9 +22,10 @@ with lib; {
     };
   };
 
-  config = let
-    cfg = config.swarm.hardware.networking;
-  in
+  config =
+    let
+      cfg = config.swarm.hardware.networking;
+    in
     mkIf cfg.enable {
       networking = {
         hostId = cfg.hostId;

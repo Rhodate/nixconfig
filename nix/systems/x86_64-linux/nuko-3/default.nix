@@ -1,4 +1,5 @@
-{...}: {
+{ ... }:
+{
   imports = [
     ../nuko/common.nix
   ];

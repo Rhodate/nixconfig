@@ -2,9 +2,11 @@
   pkgs,
   lib,
   ...
-}: let
+}:
+let
   certPath = "/var/lib/acme/${lib.swarm.domainName}/";
-in {
+in
+{
   config.swarm.esh.templates = {
     tls-certificate = {
       template = ''

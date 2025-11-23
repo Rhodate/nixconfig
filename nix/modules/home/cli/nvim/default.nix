@@ -4,7 +4,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   options.swarm.cli.nvim = {
     enable = mkOption {
       description = "Whether to install neovim on this system";
@@ -33,7 +34,15 @@ with lib; {
       withNodeJs = true;
       withPython3 = true;
 
-      extraWrapperArgs = [ "--prefix" "PATH" ":" "${lib.makeBinPath [ pkgs.csharp-ls pkgs.nixfmt-rfc-style ]}"];
+      extraWrapperArgs = [
+        "--prefix"
+        "PATH"
+        ":"
+        "${lib.makeBinPath [
+          pkgs.csharp-ls
+          pkgs.nixfmt-rfc-style
+        ]}"
+      ];
     };
   };
 }

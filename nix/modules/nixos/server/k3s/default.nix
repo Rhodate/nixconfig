@@ -3,7 +3,8 @@
   config,
   ...
 }:
-with lib; {
+with lib;
+{
   options.swarm.server.k3s = {
     enable = mkEnableOption "Whether to enable k3s";
     clusterInit = mkOption {
@@ -14,7 +15,11 @@ with lib; {
     clusterDns = mkOption {
       description = "k3s DNS";
       type = types.str;
-      default = config.swarm.hardware.networking.wireguard.hosts.nuko-1.ip;
+      default =
+        if config.networking.hostName != "nuko-1" then
+          config.swarm.hardware.networking.wireguard.hosts.nuko-1.ip
+        else
+          config.swarm.hardware.networking.wireguard.hosts.nuko-2.ip;
     };
     role = mkOption {
       description = "k3s role";
@@ -24,7 +29,7 @@ with lib; {
     zfsStorageDisks = mkOption {
       description = "path to k3s ZFS storage disks";
       type = types.listOf (types.str);
-      default = [];
+      default = [ ];
     };
     podCidr = mkOption {
       description = "k3s pod cidr";
@@ -68,7 +73,9 @@ with lib; {
           "--kube-apiserver-arg=\"--runtime-config=admissionregistration.k8s.io/v1beta1=true\""
         ])
         [
-          (mkIf (!config.swarm.server.k3s.clusterInit) "--server=https://${config.swarm.server.k3s.clusterDns}:6443")
+          (mkIf (
+            !config.swarm.server.k3s.clusterInit
+          ) "--server=https://${config.swarm.server.k3s.clusterDns}:6443")
           "--flannel-iface=wg0"
           "--node-ip=${config.swarm.hardware.networking.wireguard.ip},${config.swarm.hardware.networking.wireguard.ipv6}"
         ]
@@ -87,7 +94,7 @@ with lib; {
     };
 
     networking.firewall.interfaces.wg0 = {
-      allowedTCPPorts = [ 
+      allowedTCPPorts = [
         6443
         10250
         443
@@ -103,8 +110,8 @@ with lib; {
 
     systemd.services.user-kubeconfig = {
       description = "Copy kubeconfig to user home";
-      after = ["k3s.service"];
-      wants = ["k3s.service"];
+      after = [ "k3s.service" ];
+      wants = [ "k3s.service" ];
       serviceConfig = {
         Type = "oneshot";
         User = "root";
@@ -117,7 +124,7 @@ with lib; {
         cp /etc/rancher/k3s/k3s.yaml /home/${swarm.user}/.kube/config
         chown ${swarm.user}:${config.users.users.${swarm.user}.group} /home/${swarm.user}/.kube/config
       '';
-      wantedBy = ["multi-user.target"];
+      wantedBy = [ "multi-user.target" ];
     };
 
     boot.kernel.sysctl = {
@@ -130,19 +137,19 @@ with lib; {
     fileSystems."/var/lib/rancher/k3s" = {
       device = "/nix/persist/var/lib/rancher/k3s";
       fsType = "none";
-      options = ["bind"];
+      options = [ "bind" ];
     };
 
     fileSystems."/var/local" = {
       device = "/nix/persist/var/local";
       fsType = "none";
-      options = ["bind"];
+      options = [ "bind" ];
     };
 
     fileSystems."/etc/rancher/k3s" = {
       device = "/nix/persist/etc/rancher/k3s";
       fsType = "none";
-      options = ["bind"];
+      options = [ "bind" ];
     };
   };
 }

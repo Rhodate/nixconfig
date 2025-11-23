@@ -4,13 +4,15 @@
   modulesPath,
   ...
 }:
-with lib; {
+with lib;
+{
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ./sops.nix
   ];
 
   swarm = {
+    ssh.enable = true;
     hardware = {
       nvidia.enable = false;
       amdgpu.enable = true;
@@ -63,7 +65,7 @@ with lib; {
         hostedZoneId = "Z004213625PGR7UVYSB0C";
         awsCredentialsFile = config.sops.secrets.route53-dyndns-credentials.path;
         records = {
-          k8s = {};
+          k8s = { };
         };
       };
       acme = {
@@ -75,8 +77,18 @@ with lib; {
     };
   };
 
-  boot.initrd.availableKernelModules = ["nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod"];
-  boot.kernelModules = ["kvm-amd" "amdgpu"];
+  boot.initrd.availableKernelModules = [
+    "nvme"
+    "xhci_pci"
+    "ahci"
+    "usbhid"
+    "usb_storage"
+    "sd_mod"
+  ];
+  boot.kernelModules = [
+    "kvm-amd"
+    "amdgpu"
+  ];
 
   fileSystems."/" = {
     device = "rpool/root";
@@ -91,7 +103,10 @@ with lib; {
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/F614-4162";
     fsType = "vfat";
-    options = ["fmask=0077" "dmask=0077"];
+    options = [
+      "fmask=0077"
+      "dmask=0077"
+    ];
   };
 
   system.stateVersion = "24.11";

@@ -4,9 +4,11 @@
   lib,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.swarm.server.acme;
-in {
+in
+{
   options.swarm.server.acme = {
     enable = mkEnableOption "Enable ACME for Let's Encrypt";
     awsCredentialsFile = mkOption {
@@ -31,21 +33,19 @@ in {
       certs.${swarm.domainName} = {
         domain = "*.${swarm.domainName}";
         dnsProvider = "route53";
-        environmentFile = "${
-          pkgs.writeText "aws-creds" ''
-            AWS_SDK_LOAD_CONFIG=1
-            AWS_CONFIG_FILE=${cfg.awsCredentialsFile}
-            AWS_HOSTED_ZONE_ID=${cfg.hostedZoneId}
-            AWS_REGION=${cfg.awsRegion}
-          ''
-        }";
+        environmentFile = "${pkgs.writeText "aws-creds" ''
+          AWS_SDK_LOAD_CONFIG=1
+          AWS_CONFIG_FILE=${cfg.awsCredentialsFile}
+          AWS_HOSTED_ZONE_ID=${cfg.hostedZoneId}
+          AWS_REGION=${cfg.awsRegion}
+        ''}";
       };
     };
 
     fileSystems."/var/lib/acme" = {
       device = "/nix/persist/var/lib/acme";
       fsType = "none";
-      options = ["bind"];
+      options = [ "bind" ];
     };
   };
 }

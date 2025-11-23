@@ -3,7 +3,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   config = {
     fonts = {
       enableDefaultPackages = true;

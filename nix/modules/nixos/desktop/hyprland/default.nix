@@ -1,5 +1,6 @@
-{lib, config, ...}:
-with lib; {
+{ lib, config, ... }:
+with lib;
+{
   options = {
     swarm.desktop.hyprland = {
       enable = mkOption {
@@ -22,6 +23,7 @@ with lib; {
     programs.hyprland = {
       enable = true;
       withUWSM = true;
+      xwayland.enable = true;
     };
     programs.hyprlock.enable = true;
   };

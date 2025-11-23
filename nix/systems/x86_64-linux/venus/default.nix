@@ -3,7 +3,8 @@
   inputs,
   pkgs,
   ...
-}: {
+}:
+{
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     "${inputs.nixpkgs}/nixos/maintainers/scripts/ec2/amazon-image.nix"

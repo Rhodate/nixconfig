@@ -3,7 +3,8 @@
   config,
   ...
 }:
-with lib; {
+with lib;
+{
   sops.age.keyFile = "/nix/secrets/sops/age/keys.txt";
   sops.secrets.route53-dyndns-credentials = mkIf config.swarm.server.services.route53-dyndns.enable {
     format = "ini";

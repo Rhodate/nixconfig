@@ -4,9 +4,11 @@
   inputs,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.swarm.cli;
-in {
+in
+{
   config = mkIf (cfg.shell == "zsh") {
     home.shell.enableZshIntegration = true;
     programs.zsh = {
@@ -77,38 +79,36 @@ in {
       };
       shellAliases = {
         ls = "ls --color=auto";
-        dcmd = "nix develop --command";
+        ns = "nix shell";
       };
-      initExtraFirst = ''
-        function source_if_exists { [[ -r $1 ]] && source $1 }
-        # Start up p10k instant prompt so we don't feel the shell startup lag and can start typing instantly
-        # Quiet since direnv may output during the instant prompt
-        typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
-        source_if_exists ''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-''${USERNAME}.zsh
+      initContent = mkMerge [
+        (mkBefore ''
+          function source_if_exists { [[ -r $1 ]] && source $1 }
+          # Start up p10k instant prompt so we don't feel the shell startup lag and can start typing instantly
+          # Quiet since direnv may output during the instant prompt
+          typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
+          source_if_exists ''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-''${USERNAME}.zsh
 
-        setopt magicequalsubst
-        setopt nonomatch
-        setopt numericglobsort
-        setopt promptsubst
-        setopt incappendhistory
+          setopt magicequalsubst
+          setopt nonomatch
+          setopt numericglobsort
+          setopt promptsubst
+          setopt incappendhistory
 
-        ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(buffer-empty bracketed-paste accept-line push-line-or-edit)
-        ZSH_AUTOSUGGEST_USE_ASYNC=true
-      '';
+          ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(buffer-empty bracketed-paste accept-line push-line-or-edit)
+          ZSH_AUTOSUGGEST_USE_ASYNC=true
+        '')
 
-      initExtra = ''
-        bindkey "$terminfo[kcuu1]" history-substring-search-up
-        bindkey "$terminfo[kcud1]" history-substring-search-down
+        ''
+          bindkey "$terminfo[kcuu1]" history-substring-search-up
+          bindkey "$terminfo[kcud1]" history-substring-search-down
 
-        bindkey -M vicmd 'k' history-substring-search-up
-        bindkey -M vicmd 'j' history-substring-search-down
+          bindkey -M vicmd 'k' history-substring-search-up
+          bindkey -M vicmd 'j' history-substring-search-down
 
-        if ! test -v NVIM; then
-          alias ssh='kitty +kitten ssh'
-        fi
-
-        source ${./.p10k.zsh}
-      '';
+          source ${./.p10k.zsh}
+        ''
+      ];
 
       envExtra = ''
         export EDITOR=nvim

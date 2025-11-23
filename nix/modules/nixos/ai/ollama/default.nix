@@ -3,10 +3,12 @@
   lib,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.swarm.ai.ollama;
   hardwareCfg = config.swarm.hardware;
-in {
+in
+{
   options.swarm.ai.ollama = with types; {
     enable = mkOption {
       description = "Enable ollama";

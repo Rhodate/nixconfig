@@ -4,7 +4,8 @@
   lib,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.swarm.server.services.route53-dyndns;
   networkDevice = config.swarm.hardware.networking.networkDevice;
 
@@ -27,41 +28,45 @@ with lib; let
   };
 
   # Function to get the domain name from the hosted zone ID
-  getDomainFromZoneId = zoneId: let
-    # This would ideally query AWS for the domain name, but for now we'll use the default domain
-    domain = swarm.domainName;
-  in
+  getDomainFromZoneId =
+    zoneId:
+    let
+      # This would ideally query AWS for the domain name, but for now we'll use the default domain
+      domain = swarm.domainName;
+    in
     domain;
 
   # Function to construct the full record name from prefix (attrset key) and domain
   getFullRecordName = prefix: "${prefix}.${getDomainFromZoneId cfg.hostedZoneId}";
 
   # Combine user-defined records with the default hostname record if enabled
-  allRecords = let
-    defaultRecord = {
-      ${config.networking.hostName} = {
-        weight = 10;
-        identifier = "${config.networking.hostName}-default";
+  allRecords =
+    let
+      defaultRecord = {
+        ${config.networking.hostName} = {
+          weight = 10;
+          identifier = "${config.networking.hostName}-default";
+        };
       };
-    };
 
-    # Add default identifiers that include the prefix for uniqueness
-    addIdentifiers = mapAttrs (
-      prefix: record: let
-        identifierValue =
-          if record.identifier == null
-          then "${config.networking.hostName}-${prefix}"
-          else record.identifier;
-      in
-        record // {identifier = identifierValue;}
-    );
+      # Add default identifiers that include the prefix for uniqueness
+      addIdentifiers = mapAttrs (
+        prefix: record:
+        let
+          identifierValue =
+            if record.identifier == null then "${config.networking.hostName}-${prefix}" else record.identifier;
+        in
+        record // { identifier = identifierValue; }
+      );
 
-    userRecords = addIdentifiers cfg.records;
-  in
-    if cfg.enableDefaultHostnameRecord && !(cfg.records ? ${config.networking.hostName})
-    then userRecords // defaultRecord
-    else userRecords;
-in {
+      userRecords = addIdentifiers cfg.records;
+    in
+    if cfg.enableDefaultHostnameRecord && !(cfg.records ? ${config.networking.hostName}) then
+      userRecords // defaultRecord
+    else
+      userRecords;
+in
+{
   options.swarm.server.services.route53-dyndns = {
     enable = mkEnableOption "Enable Route53 dynamic DNS";
 
@@ -72,7 +77,7 @@ in {
 
     records = mkOption {
       type = types.attrsOf recordType;
-      default = {};
+      default = { };
       description = "Attribute set of records to maintain, with weights and identifiers. The attribute name is used as the subdomain prefix.";
       example = literalExpression ''
         {
@@ -117,7 +122,7 @@ in {
         message = "hostedZoneId is required";
       }
       {
-        assertion = cfg.records != {} || cfg.enableDefaultHostnameRecord;
+        assertion = cfg.records != { } || cfg.enableDefaultHostnameRecord;
         message = "records must be provided or enableDefaultHostnameRecord must be true";
       }
       {
@@ -137,21 +142,21 @@ in {
         isSystemUser = true;
         group = "route53-dyndns";
       };
-      groups.route53-dyndns = {};
+      groups.route53-dyndns = { };
     };
     systemd.timers.route53-dyndns = {
       wantedBy = [ "timers.target" ];
       timerConfig = {
-        OnBootSec = "5m";
-        OnUnitActiveSec = "5m";
+        OnStartupSec = "30s";
+        OnUnitActiveSec = "2m";
         Unit = config.systemd.services.route53-dyndns.name;
       };
     };
     systemd.services.route53-dyndns = {
       name = "route53-dyndns.service";
       description = "Maintains Route53 weighted records";
-      after = ["network-online.target"];
-      wants = ["network-online.target"];
+      after = [ "network-online.target" ];
+      wants = [ "network-online.target" ];
       serviceConfig = {
         Type = "oneshot";
         User = "route53-dyndns";
@@ -186,24 +191,25 @@ in {
         # Create the change batch JSON inline
         CHANGE_BATCH='{
           "Changes": [
-            ${concatStringsSep ",\n              " (mapAttrsToList (prefix: record: ''
-          {
-            "Action": "UPSERT",
-            "ResourceRecordSet": {
-              "Name": "${getFullRecordName prefix}",
-              "Type": "AAAA",
-              "TTL": ${toString cfg.ttl},
-              "SetIdentifier": "${record.identifier}",
-              "Weight": ${toString record.weight},
-              "ResourceRecords": [
+            ${concatStringsSep ",\n              " (
+              mapAttrsToList (prefix: record: ''
                 {
-                  "Value": "'"$NEW_IPV6_ADDRESS"'"
+                  "Action": "UPSERT",
+                  "ResourceRecordSet": {
+                    "Name": "${getFullRecordName prefix}",
+                    "Type": "AAAA",
+                    "TTL": ${toString cfg.ttl},
+                    "SetIdentifier": "${record.identifier}",
+                    "Weight": ${toString record.weight},
+                    "ResourceRecords": [
+                      {
+                        "Value": "'"$NEW_IPV6_ADDRESS"'"
+                      }
+                    ]
+                  }
                 }
-              ]
-            }
-          }
-        '')
-        allRecords)}
+              '') allRecords
+            )}
           ]
         }'
 

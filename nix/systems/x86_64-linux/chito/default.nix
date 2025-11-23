@@ -2,7 +2,8 @@
   config,
   modulesPath,
   ...
-}: {
+}:
+{
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ./sops.nix
@@ -37,7 +38,7 @@
         hostedZoneId = "Z004213625PGR7UVYSB0C";
         awsCredentialsFile = config.sops.secrets.route53-dyndns-credentials.path;
         records = {
-          k8s = {};
+          k8s = { };
         };
       };
       acme = {
@@ -77,19 +78,26 @@
   #   };
   # };
   boot = {
-    kernelModules = ["kvm-amd"];
+    kernelModules = [ "kvm-amd" ];
   };
 
   fileSystems."/" = {
     device = "none";
     fsType = "tmpfs";
-    options = ["defaults" "size=2G" "mode=755"];
+    options = [
+      "defaults"
+      "size=2G"
+      "mode=755"
+    ];
   };
 
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/C93D-E931";
     fsType = "vfat";
-    options = ["fmask=0077" "dmask=0077"];
+    options = [
+      "fmask=0077"
+      "dmask=0077"
+    ];
   };
 
   fileSystems."/nix" = {
@@ -105,13 +113,13 @@
   fileSystems."/var/log" = {
     device = "/nix/persist/var/log";
     fsType = "none";
-    options = ["bind"];
+    options = [ "bind" ];
   };
 
   fileSystems."/etc/secrets" = {
     device = "/nix/persist/etc/secrets";
     fsType = "none";
-    options = ["bind"];
+    options = [ "bind" ];
     neededForBoot = true;
   };
 

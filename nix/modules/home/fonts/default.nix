@@ -3,9 +3,11 @@
   config,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.swarm.fonts;
-in {
+in
+{
   options.swarm.fonts = {
     enable = mkOption {
       description = "Install and configure fonts for gui";
@@ -18,8 +20,8 @@ in {
       fontconfig = {
         enable = true;
         defaultFonts = {
-          monospace = ["FiraMono Nerd Font"];
-          sansSerif = ["FiraCode Nerd Font"];
+          monospace = [ "FiraMono Nerd Font" ];
+          sansSerif = [ "FiraCode Nerd Font" ];
         };
       };
     };

@@ -4,7 +4,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   options.swarm.cli.git = {
     enable = mkOption {
       description = "Whether this user needs git support";
@@ -30,9 +31,13 @@ with lib; {
       };
 
       lfs.enable = true;
-      difftastic = {
+    };
+    programs.difftastic = {
+      options = {
+        display = "inline";
+      };
+      git = {
         enable = true;
-        background = "dark";
       };
     };
 

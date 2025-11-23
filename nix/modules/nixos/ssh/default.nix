@@ -5,7 +5,8 @@
   systems,
   ...
 }:
-with lib; {
+with lib;
+{
   options.swarm.ssh = with pkgs; {
     enable = mkOption {
       description = "Enable sshd";
@@ -19,16 +20,17 @@ with lib; {
     };
   };
 
-  config = let
-    cfg = config.swarm.ssh;
-  in
+  config =
+    let
+      cfg = config.swarm.ssh;
+    in
     mkMerge [
       (mkIf cfg.enable {
         services.openssh = {
           enable = true;
           settings.PasswordAuthentication = false;
           settings.KbdInteractiveAuthentication = false;
-          ports = [config.swarm.ssh.port];
+          ports = [ config.swarm.ssh.port ];
         };
         users.users.${swarm.user}.openssh.authorizedKeys.keys = swarm.publicKeys;
       })
@@ -40,7 +42,9 @@ with lib; {
         environment.etc."ssh/ssh_host_ed25519_key.pub".source = "/etc/secrets/ssh/ssh_host_ed25519_key.pub";
       })
       {
-        home-manager.users.${swarm.user}.swarm.cli.ssh.systems = filter (hostname: !systems.${hostname}.specialArgs.virtual) (attrNames systems);
+        home-manager.users.${swarm.user}.swarm.cli.ssh.systems = filter (
+          hostname: !systems.${hostname}.specialArgs.virtual
+        ) (attrNames systems);
       }
     ];
 }

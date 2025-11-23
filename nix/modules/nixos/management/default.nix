@@ -4,7 +4,8 @@
   config,
   ...
 }:
-with lib; {
+with lib;
+{
   options.swarm.management = {
     enable = mkEnableOption "Whether to enable nixos management utilities";
     flakePath = mkOption {
@@ -14,9 +15,10 @@ with lib; {
     };
   };
 
-  config = let
-    cfg = config.swarm.management;
-  in
+  config =
+    let
+      cfg = config.swarm.management;
+    in
     mkIf cfg.enable {
       assertions = [
         {
