@@ -79,10 +79,10 @@ with lib;
           ];
 
           windowrule = [
-            "opacity 0.8 0.5,class:^(kitty)$"
-            "workspace 3 silent,class:^(discord)$"
-            "workspace 5 silent,title:[sS]team"
-            "float,class:[tT]or.*"
+            "match:class ^(kitty)$, opacity 0.8 0.5"
+            "match:class ^(discord)$, workspace 3 silent"
+            "match:title [sS]team, workspace 5 silent"
+            "match:class [tT]or.*, float on"
           ];
 
           bind = [

@@ -41,6 +41,7 @@ with lib;
         "${lib.makeBinPath [
           pkgs.csharp-ls
           pkgs.nixfmt-rfc-style
+          pkgs.openjdk25
         ]}"
       ];
     };

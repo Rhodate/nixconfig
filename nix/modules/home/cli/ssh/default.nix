@@ -19,6 +19,7 @@ with lib;
   config = mkIf config.swarm.cli.ssh.enable {
     programs.ssh = {
       enable = true;
+      enableDefaultConfig = false;
       matchBlocks = mkMerge (
         map (hostname: {
           ${hostname} = {

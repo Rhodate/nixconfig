@@ -17,17 +17,26 @@ with lib;
   config = mkIf config.swarm.cli.git.enable {
     programs.git = {
       enable = true;
-      userName = "rhodate";
-      userEmail = "16692923+Rhodate@users.noreply.github.com";
-
-      extraConfig = {
+      settings = {
         init.defaultBranch = "main";
-        gpg.format = "ssh";
         commit.gpgSign = true;
         tag.gpgSign = true;
-        user.signingKey = "~/.ssh/id_ed25519.pub";
-        # Not 100% sure if I ever actually configured this
-        gpg.ssh.allowedSignersFile = "~/.ssh/allowed_signers";
+        gpg = {
+          ssh.allowedSignersFile = "~/.ssh/allowed_signers";
+          format = "ssh";
+        };
+        user = {
+          name = "rhodate";
+          email = "16692923+Rhodate@users.noreply.github.com";
+          signingKey = "~/.ssh/id_ed25519.pub";
+        };
+        push = {
+          default = "current";
+          autoSetupRemote = true;
+        };
+        remote = {
+          pushDefault = "origin";
+        };
       };
 
       lfs.enable = true;
