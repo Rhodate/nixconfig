@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 with lib;
@@ -47,6 +48,7 @@ with lib;
           "alt+h" = "move_window left";
           "alt+l" = "move_window right";
           "alt+j" = "move_window down";
+          "alt+f" = "launch --type=overlay ${pkgs.swarm.find-kitty-tab}/bin/fk";
           "ctrl+h" = "kitten pass_keys.py neighboring_window left ctrl+h";
           "ctrl+j" = "kitten pass_keys.py neighboring_window bottom ctrl+j";
           "ctrl+k" = "kitten pass_keys.py neighboring_window top ctrl+k";
@@ -57,12 +59,13 @@ with lib;
           "alt+right" = "send_text all \x1bf";
           "ctrl+shift+]" = "next_tab";
           "ctrl+shift+[" = "previous_tab";
+          "ctrl+shift+t" = "combine | new_tab | set_tab_title";
         };
         settings = {
           enabled_layouts = "splits:split_axis=vertical";
 
-          allow_remote_control = "yes";
-          listen_on = "unix:/tmp/mykitty";
+          allow_remote_control = "socket-only";
+          listen_on = "unix:@kitty";
 
           editor = "nvim";
 

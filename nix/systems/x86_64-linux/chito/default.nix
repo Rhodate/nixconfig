@@ -37,9 +37,6 @@
         enable = true;
         hostedZoneId = "Z004213625PGR7UVYSB0C";
         awsCredentialsFile = config.sops.secrets.route53-dyndns-credentials.path;
-        records = {
-          k8s = { };
-        };
       };
       acme = {
         enable = true;

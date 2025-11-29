@@ -8,6 +8,7 @@ with lib;
 writeShellScriptBin "sw" ''
       #!/usr/bin/env zsh
       set -euo pipefail
+      FLAKE=''${FLAKE:-.}
 
       if [ $# -lt 1 ]; then
         echo "Usage: $0 <command> [options] [host]
@@ -88,7 +89,7 @@ writeShellScriptBin "sw" ''
 
       if [ "$command" = "deploy" ]; then
         if [ -n "$host" ]; then
-          system=$(${pkgs.nix-output-monitor}/bin/nom build .\#nixosConfigurations.''${host}.config.system.build.toplevel $buildArgs --print-out-paths -j $cores --no-link --print-out-paths)
+          system=$(${pkgs.nix-output-monitor}/bin/nom build $FLAKE\#nixosConfigurations.''${host}.config.system.build.toplevel $buildArgs --print-out-paths -j $cores --no-link --print-out-paths)
           if [ "$?" -ne 0 ]; then
             echo "Build failed"
             exit 1
@@ -123,8 +124,8 @@ writeShellScriptBin "sw" ''
           # Build only the current host
           host=$(hostname)
           # Do it separately from switching, so that I can see the changes before typing my password.
-          ${pkgs.nix-output-monitor}/bin/nom build .\#nixosConfigurations.''${host}.config.system.build.toplevel $buildArgs --print-out-paths -j $cores
-          sudo nixos-rebuild $verb --no-reexec --flake .\#''${host} -L --cores $cores --show-trace
+          ${pkgs.nix-output-monitor}/bin/nom build $FLAKE\#nixosConfigurations.''${host}.config.system.build.toplevel $buildArgs --print-out-paths -j $cores
+          sudo nixos-rebuild $verb --no-reexec --flake $FLAKE\#''${host} -L --cores $cores --show-trace
         fi
       fi
 ''

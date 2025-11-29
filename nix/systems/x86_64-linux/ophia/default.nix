@@ -47,7 +47,6 @@ with lib;
     management = {
       enable = true;
       flakePath = "/home/${swarm.user}/swarm.flake";
-      sw.enable = true;
     };
     desktop.hyprland.enable = true;
     desktop.tor.enable = true;
@@ -64,9 +63,6 @@ with lib;
         enable = true;
         hostedZoneId = "Z004213625PGR7UVYSB0C";
         awsCredentialsFile = config.sops.secrets.route53-dyndns-credentials.path;
-        records = {
-          k8s = { };
-        };
       };
       acme = {
         enable = false;

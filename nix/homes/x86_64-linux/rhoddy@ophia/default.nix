@@ -33,6 +33,7 @@
 
   home.packages = with pkgs; [
     inputs.quickshell.packages.${system}.default
+    swarm.find-kitty-tab
     k9s
     tea
     whois

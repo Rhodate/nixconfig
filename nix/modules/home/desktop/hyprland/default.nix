@@ -79,10 +79,11 @@ with lib;
           ];
 
           windowrule = [
-            "match:class ^(kitty)$, opacity 0.8 0.5"
-            "match:class ^(discord)$, workspace 3 silent"
-            "match:title [sS]team, workspace 5 silent"
+            "match:class kitty, opacity 0.8 0.5"
+            "match:class discord, workspace 3 silent"
+            "match:class steam, workspace 5 silent"
             "match:class [tT]or.*, float on"
+            "match:class Spotify, workspace 4 silent"
           ];
 
           bind = [
